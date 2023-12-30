@@ -1,0 +1,88 @@
+﻿@page "/load/{Id}/{SeoUrl}"
+@using BlazorAppServer.Data
+@inject FileService fileService
+@inject NavigationManager navigationManager
+
+<h3>@fileModel.Name скачать</h3>
+
+<HeadContent> 
+    <PageTitle>@fileModel.Seo_Title</PageTitle>
+    <meta name="description" content="@fileModel.Seo_Description">
+    <meta name="keywords" content="@fileModel.Seo_Keywords">
+</HeadContent>
+
+<div class="grid-container">
+    <div class="column column-1">
+        <p>Рейтинг: 3,6/5 - 109 голос(ов)</p>
+  
+    </div>
+    <div class="column column-2">
+        <div>@fileModel.Description</div>
+        <button @onclick="() => DownloadFile(fileModel.DownloadUrl)">Скачать .exe</button>
+        
+    </div>
+    <div class="column column-3">
+    
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    [Parameter]
+    public string SeoUrl { get; set; }
+
+    FileModel fileModel = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        fileModel = await fileService.GetLoadAsync(Convert.ToInt32(Id));
+
+        fileModel.Views++;
+
+        await fileService.UpdateLoadAsync(fileModel);
+    }
+
+    private void DownloadFile(string url)
+    {
+        // Logic to handle file download
+        navigationManager.NavigateTo(url);
+    }
+}
+<style>
+.grid-container {
+    display: grid;
+    grid-template-columns: 250px auto 200px;
+    gap: 10px; 
+    margin: 0px 0px 0px 0px;
+}
+
+.column {
+    padding: 10px;
+    background-color: #f8f9fa; /* Light gray background, you can choose your own */
+    border: 1px solid #ddd; /* Border for the column */
+}
+
+.column-1 {
+        width: 250px; /* Fixed width */
+    }
+.column-3 {
+    width: 200px; /* Fixed width */
+}
+
+.column-2 {
+    /* This column is flexible and will take the remaining space */
+}
+
+.media screen and (max-width: 992px) {
+    .grid-container {
+        grid-template-columns: 1fr; /* Stack columns on smaller screens */
+    }
+    .column {
+        width: auto; /* Full width */
+    }
+}
+</style>

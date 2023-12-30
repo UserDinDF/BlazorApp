@@ -1,0 +1,71 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using MudBlazor
+@using BlazorAppServer.Areas.Identity.Data
+
+@inject SignInManager<BlazorAppServerUser> SignInManager
+@inject UserManager<BlazorAppServerUser> UserManager
+
+<div class="navbar-custom">
+    <div id="avatar" class="avatar">
+       
+    </div>
+    <div id="menu" class="menu">
+        @if (SignInManager.IsSignedIn(User))
+        {
+            <a id="manage" class="nav-link" asp-area="Identity" asp-page="/Account/Manage/Index">Профиль</a>
+            <form id="logoutForm" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Page("/Index", new { area = "" })">
+                <button id="logout" type="submit" class="nav-link">Выход</button>
+            </form>
+        }
+        else
+        {
+            <a id="register" asp-area="Identity" asp-page="/Account/Register">Регистрация</a>
+            <a id="login" asp-area="Identity" asp-page="/Account/Login">Вход</a>
+        }
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#avatar").click(function () {
+            $("#menu").toggle();
+        });
+    });
+</script>
+<style>
+    .navbar-custom {
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        z-index: 1000;
+    }
+
+    .avatar {
+        width: 50px;
+        height: 50px;
+        background-color: #ddd; 
+        border-radius: 50%;
+        cursor: pointer;
+    }
+
+    .menu {
+        display: none;
+        background-color: white;
+        border: 1px solid black;
+        padding: 10px;
+        position: absolute;
+        right: 0;
+        bottom: 50px; 
+    }
+
+    .navbar-custom:hover .menu {
+        display: block;
+    }
+
+    .nav-link {
+        display: block;
+        margin: 5px 0;
+        color: black;
+        text-decoration: none;
+    }
+</style>

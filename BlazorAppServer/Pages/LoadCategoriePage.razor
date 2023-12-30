@@ -1,0 +1,110 @@
+﻿@using Enums
+@using Data
+@inject FileService fileService
+
+@page "/load/{categorieUrl}"
+
+<link href="/css/FileStyle.css" rel="stylesheet" type="text/css" />
+
+<div class="breadcrumbNav">
+    <BreadcrumbComponent Items="@breadcrumbItems" />
+</div>
+
+@if (FileList.Count > 0)
+{
+    @foreach (FileModel item in FileList)
+    {
+        <div class="mini-vid clr">
+            <div class="mini-vid-title">
+                <span class="title-icon"><a href="/load/@item.Id/@item.Seo_Url">@item.Name</a></span>
+            </div>
+            <div class="mini-vid-img-text">
+                <div class="mini-vid-img">
+                    <img src="@item.Image" alt="@item.Name">
+                </div>
+                <div class="mini-vid-text">
+                    @item.Description
+                </div>
+            </div>
+            <div class="mini-vid-detali">
+                <span class="dates">@item.CreationTime</span>
+                <span class="reads">@item.Views просмотров</span>
+                <span class="coments">@item.Comments комментариев</span>
+                <span><a href="$ENTRY_URL$">Открыть</a></span>
+            </div>
+        </div>
+    }
+}
+else
+{
+    <MudAlert Severity="Severity.Info" Variant="Variant.Filled">К сожалению данная категория еще пуста...</MudAlert>
+}
+
+@code {
+
+    private bool isPageInitialized = false;
+
+    List<FileModel> FileList = new List<FileModel>();
+
+    [Parameter]
+    public string categorieUrl
+    {
+        get => _categorieUrl;
+        set
+        {
+            if (_categorieUrl == value) return;
+            _categorieUrl = value;
+            UpdateBreadcrumb();
+            LoadFiles();
+        }
+    }
+    private string _categorieUrl;
+
+    private List<Components.BreadcrumbItem> breadcrumbItems = new List<Components.BreadcrumbItem>
+    {
+        new Components.BreadcrumbItem { DisplayName = "Главная страница", Url = "/", Position = 1 },
+        new Components.BreadcrumbItem { DisplayName = "Каталог файлов", Url = "/load",  Position = 2 },
+        new Components.BreadcrumbItem { DisplayName = $"Категория", Url = $"/load/#", IsCurrent=true, Position = 3 },
+    };
+
+    private Dictionary<string, string> CategoriesList = Enum.GetValues(typeof(Categories))
+          .Cast<Categories>()
+          .ToDictionary(
+              x => EnumHelper.GetDescription(x),
+              x => EnumHelper.GetUrlSlug(x)
+          );
+
+    private string GetCategoryNameFromSlug(string slug)
+    {
+        var category = CategoriesList.FirstOrDefault(c => c.Value == slug);
+        return category.Key ?? "Unknown Category";
+    }
+
+    private void UpdateBreadcrumb()
+    {
+        var categoryName = GetCategoryNameFromSlug(categorieUrl);
+        breadcrumbItems[2] = new Components.BreadcrumbItem
+            {
+                DisplayName = categoryName,
+                Url = $"/load/{categorieUrl}",
+                IsCurrent = true,
+                Position = 3
+            };
+    }
+
+    private async Task LoadFiles()
+    {
+        if (isPageInitialized)
+        {
+            var categoryName = GetCategoryNameFromSlug(_categorieUrl);
+            FileList = await fileService.GetLoadFromCategorie(categoryName);
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+          isPageInitialized = true;
+        await LoadFiles();
+      
+    }
+}

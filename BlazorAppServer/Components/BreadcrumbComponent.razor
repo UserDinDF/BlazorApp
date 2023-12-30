@@ -1,0 +1,27 @@
+﻿@using BlazorAppServer.Components
+
+<nav aria-label="Breadcrumb" class="breadcrumb">
+    <ol typeof="BreadcrumbList" vocab="https://schema.org/" aria-label="breadcrumbs">
+        @foreach (var item in Items)
+        {
+            <li property="itemListElement" typeof="ListItem">
+                @if (item.IsCurrent)
+                {
+                    <span property="name">@item.DisplayName</span>
+                }
+                else
+                {
+                    <a property="item" href="@item.Url">
+                        <span property="name">@item.DisplayName</span>
+                    </a>
+                }
+                <meta property="position" content="@item.Position" />
+            </li>
+        }
+    </ol>
+</nav>
+
+@code {
+    [Parameter]
+    public List<BreadcrumbItem> Items { get; set; }
+}

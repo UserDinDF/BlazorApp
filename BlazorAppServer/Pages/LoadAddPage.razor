@@ -1,0 +1,187 @@
+﻿@page "/load/add"
+@using BlazorAppServer.Data
+@inject FileService fileService
+@using Enums
+@using System.Globalization;
+@inject IJSRuntime JsRuntime
+
+<h3>Добавить новый материал</h3>
+
+<MudGrid>
+    <MudItem xs="12">
+        <MudTextField Label="Название материала" @bind-Value="file.Name" Immediate="true" OnKeyUp="@FileNameChanged"></MudTextField>
+    </MudItem>
+    <MudItem xs="12">
+        <MudSelect T="string" Label="Категория" @bind-Value="SelectedCategory">
+            @foreach (var item in CategoriesList)
+            {
+                <MudSelectItem Value="@item">@item</MudSelectItem>
+            }
+        </MudSelect>
+    </MudItem>
+    <MudItem xs="12">
+        <MudTextField Label="Краткое описание" @bind-Value="file.Description" T="string" Multiline="true" Rows="4"></MudTextField>
+    </MudItem>
+    <MudItem xs="12">
+        <MudTextField T="string" Label="Полное описание" Variant="Variant.Text" @bind-Value="file.DescriptionFull" AutoGrow HelperText="" />
+    </MudItem>
+    <MudItem xs="12">
+        <MudTextField Label="SEO-Title" @bind-Value="file.Seo_Title"></MudTextField>
+    </MudItem>
+    <MudItem xs="12">
+        <MudTextField Label="SEO-Description" @bind-Value="file.Seo_Description"></MudTextField>
+    </MudItem>
+    <MudItem xs="12">
+        <MudTextField Label="SEO-Keywords" @bind-Value="file.Seo_Keywords"></MudTextField>
+    </MudItem>
+    <MudItem xs="12">
+        <MudTextField Label="SEO-Url" @bind-Value="file.Seo_Url"></MudTextField>
+    </MudItem>
+    <MudItem xs="12">
+        <MudTextField Label="Ссылка на изображение" @bind-Value="file.Image"></MudTextField>
+    </MudItem>
+    <MudItem xs="12">
+        <MudTextField Label="Ключевые слова" @bind-Value="file.Keywords"></MudTextField>
+    </MudItem>
+    <MudItem xs="12">
+        <MudTextField Label="Ссылка на скачивание" @bind-Value="file.DownloadUrl"></MudTextField>
+    </MudItem>
+
+        <MudItem xs="12">
+        <MudTextField Label="Цена" @bind-Value="file.Price"></MudTextField>
+    </MudItem>
+
+      <MudItem xs="12">
+        <MudTextField Label="Лицензия" @bind-Value="file.Licence"></MudTextField>
+    </MudItem>
+    <MudItem xs="12">
+        <MudTextField Label="Разработчик" @bind-Value="file.Developer"></MudTextField>
+    </MudItem>
+     <MudItem xs="12">
+        <MudTextField Label="Платформа" @bind-Value="file.OC"></MudTextField>
+    </MudItem>
+     <MudItem xs="12">
+        <MudTextField Label="Версия" @bind-Value="file.Version"></MudTextField>
+    </MudItem>
+</MudGrid>
+
+@if (AlertIsVisible)
+{
+    <MudAlert Severity="Severity.Warning">@AlertText</MudAlert>
+}
+
+<MudButton OnClick="@AddFile" Color="Color.Primary">Добавить материал</MudButton>
+
+@code {
+    [Parameter]
+    public bool AlertIsVisible { get; set; }
+    [Parameter]
+    public string AlertText { get; set; }
+
+    List<string> CategoriesList = Enum.GetValues(typeof(Categories))
+        .Cast<Categories>()
+        .Select(x => EnumHelper.GetDescription(x))
+        .ToList();
+
+    FileModel file = new FileModel();
+
+    [Parameter]
+    public string SelectedCategory { get; set; }
+
+    private async void AddFile()
+    {
+        file.CreationTime = DateTime.Now;
+        file.UpdateTime = DateTime.Now;
+        file.Category = SelectedCategory;
+        file.Language = "ru";
+
+        if (CheckFileBeforeAdd() == false)
+        {
+            AlertIsVisible = true;
+            return;
+        }
+
+        AlertIsVisible = false;
+        bool ergebnis = await fileService.InsertLoadAsync(file);
+
+        if (ergebnis)
+        {
+            await JsRuntime.InvokeVoidAsync("alert", "Файл был успешно добавлен");
+        }
+        else
+        {
+            await JsRuntime.InvokeVoidAsync("alert", "Файл не был добавлен");
+        }
+    }
+
+    private bool CheckFileBeforeAdd()
+    {
+        if (String.IsNullOrEmpty(file.Name))
+        {
+            AlertText = "Название материала отсутствует";
+            return false;
+        }
+        if (String.IsNullOrEmpty(SelectedCategory))
+        {
+            AlertText= "Категория не выбрана";
+            return false;
+        }
+        if (String.IsNullOrEmpty(file.Description))
+        {
+            AlertText = "Краткое описание отсутствует";
+            return false;
+        }
+        if (String.IsNullOrEmpty(file.DescriptionFull))
+        {
+            AlertText = "Полное описание отсутствует";
+            return false;
+        }
+        if (String.IsNullOrEmpty(file.Seo_Title))
+        {
+            AlertText = "SEO-Title отсутствует";
+            return false;
+        }
+        if (String.IsNullOrEmpty(file.Seo_Description))
+        {
+            AlertText ="SEO-Description отсутствует";
+            return false;
+        }
+        if (String.IsNullOrEmpty(file.Seo_Keywords))
+        {
+            AlertText = "SEO-Keywords отсутствует";
+            return false;
+        }
+        if (String.IsNullOrEmpty(file.Seo_Url))
+        {
+            AlertText ="SEO-Url отсутствует";
+            return false;
+        }
+        if (String.IsNullOrEmpty(file.Image))
+        {
+            AlertText = "Ссылка на изображение отсутствует";
+            return false;
+        }
+        if (String.IsNullOrEmpty(file.Keywords))
+        {
+            AlertText = "Ключевые слова отсутствуют";
+            return false;
+        }
+        if (String.IsNullOrEmpty(file.DownloadUrl))
+        {
+            AlertText = "Ссылка на скачивание отсутствует";
+            return false;
+        }
+
+        return true;
+    }
+
+    private async Task FileNameChanged(KeyboardEventArgs args)
+    {
+        // Your logic here
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Initialization logic here
+    }
+}

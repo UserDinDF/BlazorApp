@@ -1,0 +1,41 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using System.Security.Claims
+@using Microsoft.AspNetCore.Components.Authorization
+@using BlazorAppServer.Areas.Identity.Data
+@inject SignInManager<BlazorAppServerUser> SignInManager
+@inject UserManager<BlazorAppServerUser> UserManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+
+<ul class="navbar-nav">
+    @if (SignInManager.IsSignedIn(authState.User))
+    {
+        <li class="nav-item">
+            <a id="manage" class="nav-link text-dark" href="Identity/Account/Manage">Hello @UserManager.GetUserName(authState.User)!</a>
+        </li>
+        <li class="nav-item">
+            <form id="logoutForm" class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="/Index", new { area = "" })">
+                <button id="logout" type="submit" class="nav-link btn btn-link text-dark border-0">Logout</button>
+            </form>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item">
+            <a class="nav-link text-dark" id="register" asp-area="Identity" asp-page="/Account/Register">Register</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link text-dark" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
+        </li>
+    }
+</ul>
+
+
+@code{
+    private AuthenticationState authState;
+
+    protected override async Task OnInitializedAsync()
+    {
+        authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+    }
+}
