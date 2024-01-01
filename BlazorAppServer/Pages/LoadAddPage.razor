@@ -46,7 +46,12 @@
     <MudItem xs="12">
         <MudTextField Label="Ссылка на скачивание" @bind-Value="file.DownloadUrl"></MudTextField>
     </MudItem>
-
+      <MudItem xs="12">
+        <MudTextField Label="Название скачиваемого файла" @bind-Value="file.DownloadFileName"></MudTextField>
+    </MudItem>
+    <MudItem xs="12">
+        <MudTextField Label="Размер файла" @bind-Value="file.DownloadSize"></MudTextField>
+    </MudItem>
         <MudItem xs="12">
         <MudTextField Label="Цена" @bind-Value="file.Price"></MudTextField>
     </MudItem>
@@ -179,7 +184,12 @@
 
     private async Task FileNameChanged(KeyboardEventArgs args)
     {
-      
+        if (!string.IsNullOrEmpty(file.DescriptionFull))
+        {
+             file.DescriptionFull.Replace(" ", "<br>");
+        }
+
+  
     }
 
     protected override async Task OnInitializedAsync()

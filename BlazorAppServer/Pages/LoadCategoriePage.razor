@@ -16,7 +16,7 @@
     {
         <div class="mini-vid clr">
             <div class="mini-vid-title">
-                <span class="title-icon"><a href="/load/@item.Id/@item.Seo_Url">@item.Name</a></span>
+                <span class="title-icon"><a href="@item.GetFilePath()">@item.Name</a></span>
             </div>
             <div class="mini-vid-img-text">
                 <div class="mini-vid-img">
@@ -30,7 +30,7 @@
                 <span class="dates">@item.CreationTime</span>
                 <span class="reads">@item.Views просмотров</span>
                 <span class="coments">@item.Comments комментариев</span>
-                <span><a href="$ENTRY_URL$">Открыть</a></span>
+                <span><a href="@item.GetFilePath()">Открыть</a></span>
             </div>
         </div>
     }
@@ -67,22 +67,10 @@ else
         new Components.BreadcrumbItem { DisplayName = $"Категория", Url = $"/load/#", IsCurrent=true, Position = 3 },
     };
 
-    private Dictionary<string, string> CategoriesList = Enum.GetValues(typeof(Categories))
-          .Cast<Categories>()
-          .ToDictionary(
-              x => EnumHelper.GetDescription(x),
-              x => EnumHelper.GetUrlSlug(x)
-          );
-
-    private string GetCategoryNameFromSlug(string slug)
-    {
-        var category = CategoriesList.FirstOrDefault(c => c.Value == slug);
-        return category.Key ?? "Unknown Category";
-    }
 
     private void UpdateBreadcrumb()
     {
-        var categoryName = GetCategoryNameFromSlug(categorieUrl);
+        string categoryName = Enums.EnumHelper.GetCategoryNameFromSlug(categorieUrl);
         breadcrumbItems[2] = new Components.BreadcrumbItem
             {
                 DisplayName = categoryName,
@@ -96,7 +84,7 @@ else
     {
         if (isPageInitialized)
         {
-            var categoryName = GetCategoryNameFromSlug(_categorieUrl);
+            string categoryName = Enums.EnumHelper.GetCategoryNameFromSlug(_categorieUrl);
             FileList = await fileService.GetLoadFromCategorie(categoryName);
         }
     }

@@ -1,6 +1,9 @@
-﻿using System.ComponentModel;
+﻿using BlazorAppServer.Pages;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using static MudBlazor.CategoryTypes;
+using BlazorAppServer.Enums;
 
 namespace BlazorAppServer.Data
 {
@@ -49,5 +52,18 @@ namespace BlazorAppServer.Data
         public string Developer { get; set; }
         public string Version { get; set; }
         public string OC { get; set; }
+        public string DownloadSize { get; set; }
+        public string DownloadFileName { get; set; }
+        public string GetCategoryLink()
+        { 
+            var categoryName = Enums.EnumHelper.GetCategoryNameFromSlug(Category);
+
+            return $"/load/{categoryName}/{Seo_Url}";
+        }
+
+        public string GetFilePath()
+        {
+            return $"/load/{Id}/{Seo_Url}";
+        }
     }
 }

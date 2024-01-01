@@ -26,5 +26,29 @@ namespace BlazorAppServer.Enums
             var attributes = memInfo[0].GetCustomAttributes(typeof(UrlSlugAttribute), false);
             return (attributes.Length > 0) ? ((UrlSlugAttribute)attributes[0]).UrlSlug : string.Empty;
         }
+
+        public static string GetCategoryNameFromSlug(string slug)
+        {
+            var category = CategoriesList.FirstOrDefault(c => c.Key == slug);
+
+            if (category.Key != null)
+            {
+                category = CategoriesList.FirstOrDefault(c => c.Value == slug);
+                return category.Key;
+            }
+            else
+            {
+                category = CategoriesList.FirstOrDefault(c => c.Value == slug);
+                return category.Key;
+            }
+        }
+
+        private static Dictionary<string, string> CategoriesList = Enum.GetValues(typeof(Categories))
+        .Cast<Categories>()
+        .ToDictionary(
+            x => EnumHelper.GetDescription(x),
+            x => EnumHelper.GetUrlSlug(x)
+        );
+
     }
 }

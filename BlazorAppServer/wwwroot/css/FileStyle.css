@@ -22,12 +22,6 @@
     float: left;
 }
 
-.breadcrumbNav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
 .add-file-link {
     display: flex;
     align-items: center;
@@ -119,3 +113,5 @@
                 text-decoration: none;
                 background-color: #f27935;
             }
+
+

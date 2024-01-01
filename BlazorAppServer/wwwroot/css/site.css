@@ -73,22 +73,52 @@ a, .btn-link {
         content: "An error has occurred."
     }
 
-.breadcrumb ol {
-    list-style-type: none;
-    padding: 0;
-    margin: 0;
+
+.breadcrumbNav {
+    background: #F9F9FB;
+    border-top: solid 1px #CDCDCD;
+    border-bottom: solid 1px #CDCDCD;
+    margin-block: 0px 10px;
+    padding: 5px 5px 10px 10px;
+    height: 30px;
+    writing-mode: horizontal-tb;
 }
 
-.breadcrumb li {
-    display: inline;
-    margin-right: 8px;
+.breadcrumb {
+    flex: 1; /* Let the breadcrumb take up the available space */
 }
 
-    .breadcrumb li::after {
-        content: "→";
-        margin-left: 8px;
+    .breadcrumb ol {
+        list-style-type: none;
+        padding: 0px;
     }
 
-    .breadcrumb li:last-child::after {
-        content: "";
+        .breadcrumb ol a {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            color: #9D94EE;
+        }
+
+            .breadcrumb ol a:hover {
+                list-style-type: none;
+                text-decoration: underline;
+                margin: 1px;
+                color: #9D94EE;
+            }
+
+    .breadcrumb li {
+        display: inline;
+        margin-right: 8px;
     }
+
+        .breadcrumb li::after {
+            content: "/";
+            margin-left: 8px;
+            color: blue;
+        }
+
+        .breadcrumb li:last-child::after {
+            content: "";
+            color: red;
+        }
