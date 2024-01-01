@@ -7,7 +7,7 @@
 
 <div class="navbar-custom">
     <div id="avatar" class="avatar">
-       
+        <img src="https://cdn0.iconfinder.com/data/icons/user-pictures/100/unknown_1-2-512.png" width="50" height="50" alt="test" />
     </div>
     <div id="menu" class="menu">
         @if (SignInManager.IsSignedIn(User))
@@ -28,7 +28,7 @@
 <script>
     $(document).ready(function () {
         $("#avatar").click(function () {
-            $("#menu").toggle();
+            $("#menu").toggleClass("show"); 
         });
     });
 </script>
@@ -43,29 +43,33 @@
     .avatar {
         width: 50px;
         height: 50px;
-        background-color: #ddd; 
+        background-color: #ddd;
         border-radius: 50%;
         cursor: pointer;
+        overflow: hidden;
     }
 
     .menu {
-        display: none;
+        display: block;
         background-color: white;
         border: 1px solid black;
+        border-radius: 5px;
         padding: 10px;
         position: absolute;
         right: 0;
-        bottom: 50px; 
+        bottom: 60px;
+        max-height: 0;
+        overflow: hidden;
+        visibility: hidden;
+        opacity: 0;
+        transition: max-height 0.3s ease-out, visibility 0.3s ease-out, opacity 0.3s ease-out;
     }
 
-    .navbar-custom:hover .menu {
-        display: block;
+    .navbar-custom:hover .menu,
+    .navbar-custom .menu.show {
+        max-height: 200px; 
+        visibility: visible;
+        opacity: 1;
     }
 
-    .nav-link {
-        display: block;
-        margin: 5px 0;
-        color: black;
-        text-decoration: none;
-    }
 </style>

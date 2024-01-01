@@ -1,0 +1,33 @@
+﻿@page "/admin"
+
+@using BlazorAppServer.Components
+@using Microsoft.AspNetCore.Identity
+@using Enums
+@using BlazorAppServer.Areas.Identity.Data
+@using BlazorAppServer.Data
+@using BlazorAppServer.Components.Informers
+
+@inject FileService loadService
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+@inject SignInManager<BlazorAppServerUser> SignInManager
+@inject UserManager<BlazorAppServerUser> UserManager
+
+
+<h3>Админ-центр</h3>
+
+
+<LastFilesInformerDataGrid/>
+
+
+@code {
+    List<FileModel> FileList;
+    IQueryable<BlazorAppServerUser> Users;
+
+    protected override async Task OnInitializedAsync()
+    {
+        // FileList = await loadService.GetLoadsAsync();
+        Users = UserManager.Users;
+    }
+
+}

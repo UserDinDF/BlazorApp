@@ -1,0 +1,76 @@
+﻿@using BlazorAppServer.Data
+@using Microsoft.EntityFrameworkCore
+
+@inject FileService fileService
+
+<div class="header-row">
+    <MudText Typo="Typo.h6" Class="header-title">Новые файлы</MudText>
+    <MudIconButton OnClick="@((e)=> HandleUpdateClick(e))" Icon="@Icons.Material.Filled.Refresh" Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small" Class="refresh-button" />
+</div>
+
+@if (lastFilesLists.Count != 0)
+{
+    <MudDataGrid Style="font-size:9px;" @ref="DataGrid" Items="@lastFilesLists" Sortable="true">
+        <Columns>
+            <PropertyColumn Property="x => x.Name" Title="Название">
+         
+            </PropertyColumn>
+
+            <PropertyColumn Property="x => x.Category" Title="Категория" />
+            <PropertyColumn Property="x => x.CreationTime" Title="Дата" />
+        </Columns>
+    </MudDataGrid>
+
+}
+else
+{
+    <label>Таблица загружается...</label>
+}
+
+@code {
+    List<FileModel> lastFilesLists = new ();
+
+    private MudDataGrid<FileModel> DataGrid;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        await LoadFiles();
+    }
+
+    private async Task LoadFiles()
+    {
+        lastFilesLists = await fileService.GetLoadsAsync();
+        lastFilesLists = lastFilesLists.OrderBy(x => x.CreationTime).Take(10).ToList();
+    }
+
+    private async void HandleUpdateClick(MouseEventArgs e)
+    {
+        lastFilesLists.Clear();
+
+        StateHasChanged();
+
+        await Task.Delay(200);
+
+        await LoadFiles();
+
+        StateHasChanged();
+    }
+}
+<style>
+    .header-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .header-title {
+        flex-grow: 1;
+    }
+
+    .refresh-button {
+        flex-shrink: 0; 
+    }
+</style>

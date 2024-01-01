@@ -11,9 +11,14 @@ using MudBlazor.Services;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using BlazorAppServer.Areas.Identity.Data;
+using Microsoft.AspNetCore.ResponseCompression;
+using Microsoft.AspNetCore.SignalR;
+
 var builder = WebApplication.CreateBuilder(args);
-var connectionString = builder.Configuration.GetConnectionString("BlazorAppServerContextConnection") ?? throw new InvalidOperationException("Connection string 'BlazorAppServerContextConnection' not found.");
-//builder.Services.AddSignalR();
+//var connectionString = builder.Configuration.GetConnectionString("BlazorAppServerContextConnection") ?? throw new InvalidOperationException("Connection string 'BlazorAppServerContextConnection' not found.");
+
+string signalRConnectionString = "Endpoint=https://blazoappsite.service.signalr.net;AccessKey=JYMBkoqcuddjCNQgTwPtTwZRYjLpB2m6WMzRTr1Dqyo=;Version=1.0;";
+builder.Services.AddSignalR().AddAzureSignalR(signalRConnectionString);
 
 
 //var keyVaultEndpoint = new Uri(builder.Configuration["VaultKey"]);
@@ -28,11 +33,18 @@ builder.Services.AddBlazoredLocalStorage();
 
 //builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(kvs.Value));
 
-string test = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=softportaldb;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False";
-builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(test));
+string localdb = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=softportaldb;Integrated Security=True;Connect Timeout=30;Encrypt=False;Trust Server Certificate=False;Application Intent=ReadWrite;Multi Subnet Failover=False";
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(localdb));
+
+builder.Services.AddQuickGridEntityFrameworkAdapter();;
 
 
-builder.Services.AddDefaultIdentity<BlazorAppServerUser>(options => options.SignIn.RequireConfirmedAccount = true).AddEntityFrameworkStores<ApplicationDbContext>();
+//builder.Services.AddDefaultIdentity<BlazorAppServerUser>(options => options.SignIn.RequireConfirmedAccount = true)
+//    .AddEntityFrameworkStores<ApplicationDbContext>();
+
+builder.Services.AddIdentity<BlazorAppServerUser, IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
 
 builder.Services.AddMudServices();
 
@@ -42,8 +54,6 @@ builder.Services.AddScoped<FileService>();
 
 
 var app = builder.Build();
-app.UseRequestLocalization("ru-RU");
-
 
 //using (var scope = builder.Services.BuildServiceProvider().CreateScope())
 //{

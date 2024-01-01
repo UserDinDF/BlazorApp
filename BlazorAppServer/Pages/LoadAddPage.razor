@@ -35,7 +35,7 @@
         <MudTextField Label="SEO-Keywords" @bind-Value="file.Seo_Keywords"></MudTextField>
     </MudItem>
     <MudItem xs="12">
-        <MudTextField Label="SEO-Url" @bind-Value="file.Seo_Url"></MudTextField>
+        <MudTextField Label="SEO-Url"  TextChanged="SeoUrlTextChanged" @bind-Value="file.Seo_Url"></MudTextField>
     </MudItem>
     <MudItem xs="12">
         <MudTextField Label="Ссылка на изображение" @bind-Value="file.Image"></MudTextField>
@@ -69,14 +69,16 @@
 {
     <MudAlert Severity="Severity.Warning">@AlertText</MudAlert>
 }
-
+<br /><br />
 <MudButton OnClick="@AddFile" Color="Color.Primary">Добавить материал</MudButton>
-
+<br /><br /><br /><br /><br /><br />
 @code {
     [Parameter]
     public bool AlertIsVisible { get; set; }
     [Parameter]
     public string AlertText { get; set; }
+
+    List<FileModel> Files;
 
     List<string> CategoriesList = Enum.GetValues(typeof(Categories))
         .Cast<Categories>()
@@ -177,11 +179,25 @@
 
     private async Task FileNameChanged(KeyboardEventArgs args)
     {
-        // Your logic here
+      
     }
 
     protected override async Task OnInitializedAsync()
     {
-        // Initialization logic here
+        Files = await fileService.GetLoadsAsync();
+    }
+
+    private void SeoUrlTextChanged(string value)
+    {
+        foreach (FileModel item in Files)
+        {
+            if (item.Seo_Url == value)
+            {
+                AlertText = "Данный URL уже используется";
+                AlertIsVisible = true;
+                return;
+            }
+        }
+        AlertIsVisible = false;
     }
 }
