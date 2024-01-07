@@ -138,7 +138,7 @@
 
         files = await commentService.fileRepository.GetLoadsAsync();
         fileModel = await commentService.fileRepository.GetLoadAsync(Convert.ToInt32(Id));
-        fileModel.Image = await commentService.imageRepository.GetImagesAsync(Convert.ToInt32(fileModel));
+        fileModel.Image = await commentService.imageRepository.GetImagesAsync(Convert.ToInt32(fileModel.Id));
         fileModel.Comments = await commentService.commentRepository.GetCommentsAsync();
 
         InformerRandomFiles = files;
