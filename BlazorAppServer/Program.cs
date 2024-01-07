@@ -13,6 +13,7 @@ using Azure.Security.KeyVault.Secrets;
 using BlazorAppServer.Areas.Identity.Data;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.AspNetCore.Components.Server;
 
 var builder = WebApplication.CreateBuilder(args);
 //var connectionString = builder.Configuration.GetConnectionString("BlazorAppServerContextConnection") ?? throw new InvalidOperationException("Connection string 'BlazorAppServerContextConnection' not found.");
@@ -39,22 +40,31 @@ builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlSer
 builder.Services.AddQuickGridEntityFrameworkAdapter();;
 
 
+builder.Services.AddIdentity<BlazorAppServerUser, IdentityRole>()
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders()
+    .AddDefaultUI();
+builder.Services.AddCascadingAuthenticationState();
+builder.Services.AddOptions();
+builder.Services.AddAuthorizationCore();
+
+//builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
+
+
+
+
 //builder.Services.AddDefaultIdentity<BlazorAppServerUser>(options => options.SignIn.RequireConfirmedAccount = true)
 //    .AddEntityFrameworkStores<ApplicationDbContext>();
 
-builder.Services.AddIdentity<BlazorAppServerUser, IdentityRole>()
-    .AddEntityFrameworkStores<ApplicationDbContext>()
-    .AddDefaultTokenProviders();
 
 builder.Services.AddMudServices();
 
 builder.Services.AddLocalization();
 
 builder.Services.AddScoped<FileService>();
-
+builder.Services.AddScoped<CommentService>();
 
 var app = builder.Build();
-
 //using (var scope = builder.Services.BuildServiceProvider().CreateScope())
 //{
 //    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();

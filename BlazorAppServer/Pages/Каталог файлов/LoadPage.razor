@@ -3,6 +3,7 @@
 @using BlazorAppServer.Components
 @using BlazorAppServer.Enums
 @inject FileService fileService
+@inject CommentService commentService
 @inject NavigationManager navigationManager
 
 <PageTitle>@GetTitle()</PageTitle>
@@ -38,20 +39,39 @@
 <div class="short__meta-item"><MudIcon Icon="@Icons.Material.Filled.DateRange" Size="Size.Small" />@fileModel.CreationTime.ToShortDateString(), @fileModel.CreationTime.ToShortTimeString()</div>
 <div class="short__meta-item hm2"></div>
 <div class="short__meta-item hm2"><MudIcon Icon="@Icons.Material.Filled.Preview" Size="Size.Small" />@fileModel.Views</div>
-<div class="short__meta-item"><MudIcon Icon="@Icons.Material.Filled.Comment" Size="Size.Small" />@fileModel.Comments</div>
+<div class="short__meta-item"><MudIcon Icon="@Icons.Material.Filled.Comment" Size="Size.Small" />0</div>
 <div class="short__meta-item"><?$RSTARS$('17','/dleimages/rating.svg','1','float')?></div>
 </div>
 </header>
 
-<figure class="short__img img-fit-cover"><MudImage Src="@fileModel.Image" Width="332" Height="250" Alt="Swedish Farm House" Elevation="25" Class="rounded-lg ma-4"/></figure>
+
+<MudGrid Justify="Justify.FlexStart" Style="border-radius:1px">
+    <MudItem Style="height:300px;">
+        <MudImage Src="@fileModel.Image" Height="280" Alt="Swedish Farm House" Elevation="25" Class="rounded-lg ma-4"/>
+    </MudItem>
+
+    <MudItem>
+        <MudPaper Style="border-radius:2px;background:#F5F5F5;padding-top:10px;padding-left:5px;padding-bottom:15px;padding-right:15px;" Elevation="0">
+            <MudText Typo="Typo.h6">Информация</MudText>
+            <MudStack>
+                <MudPaper Class="pa-1" Elevation="0" Style="border-radius:0px; font-size:10px;">Разработчик: <b>@fileModel.Developer </b></MudPaper>
+                <MudPaper Class="pa-1" Elevation="0" Style="border-radius:0px; font-size:10px;">Цена: <b>@fileModel.Price</b></MudPaper>
+                <MudPaper Class="pa-1" Elevation="0" Style="border-radius:0px; font-size:10px;">Лицензия: <b>@fileModel.Licence</b></MudPaper>
+                <MudPaper Class="pa-1" Elevation="0" Style="border-radius:0px; font-size:10px;">Версия: <b>@fileModel.Version</b></MudPaper>
+                <MudPaper Class="pa-1" Elevation="0" Style="border-radius:0px; font-size:10px;">Язык: <b>@fileModel.Language</b></MudPaper>
+                <MudPaper Class="pa-1" Elevation="0" Style="border-radius:0px; font-size:10px;">ОС: <b>@fileModel.OC</b></MudPaper>
+                <MudPaper Class="pa-1" Elevation="0" Style="border-radius:0px; font-size:10px;">Рейтинг: <b>@fileModel.Rating</b></MudPaper>
+            </MudStack>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
 
 <div class="short__desc">
 <div class="page__text full-text clearfix">@GetHtmlDescription()</div>
 
-<br><a href="$FILE_URL$" class="fdl-btn ignore-select">
-<div class="fdl-btn-title">Скачать @fileModel.Name бесплатно</div>
+<br><a href="@fileModel.DownloadUrl" class="fdl-btn ignore-select">
+<div class="fdl-btn-title"><strong>@fileModel.Name скачать бесплатно</strong></div>
 <div class="fdl-btn-size fx-col fx-center">Размер: @fileModel.DownloadSize</div>
-
 <div class="fdl-btn-footer fx-row fx-middle">
 <div class="fdl-btn-caption fx-1 ws-nowrap">Название файла: @fileModel.DownloadFileName</div>
 <div class="fdl-btn-dl">Скачали @fileModel.Downloads раз</div>
@@ -60,51 +80,52 @@
 <div class="fdl-btn-icon"><span class="fal fa-arrow-to-bottom"></span></div>
 </a>
 
-<?if($TAGS$)?><div class="page__tags"><span class="fal fa-tags"></span>$TAGS$</div><?endif?>
+<div class="page__tags"><span class="fal fa-tags"></span>@fileModel.Keywords</div>
 
-<?if($COM_IS_ACTIVE$)?>
+
+
 <div class="page__comments">
+    <div class="page__comments-header">
+        <div class="page__comments-title">Комментарии</div>
+        <!-- Add any additional comment-related information here -->
+    </div>
 
-<div class="page__comments-header">
-<div class="page__comments-title">Комментарии</div>
-<div class="page__comments-info">
-<span class="fal fa-exclamation-circle"></span>
-Минимальная длина комментария - 50 знаков. комментарии модерируются
-</div>
-<button class="page__comments-btn js-show-comments">Добавить</button>
-</div>
+    <!-- Display comments -->
+    <div class="page__comments-list">
+        @foreach (var comment in fileModel.Comments)
+        {
+            <div class="comment">
+                <div class="comment-author">@comment.Author</div>
+                <div class="comment-content">@comment.Content</div>
+                <div class="comment-timestamp">@comment.Timestamp.ToString("yyyy-MM-dd HH:mm:ss")</div>
+            </div>
+        }
+    </div>
 
-<div class="page__comments-form d-none">
-<?if($COM_CAN_ADD$)?>$COM_ADD_FORM$<?else?>
-<?if($USER_LOGGED_IN$)?>
-<?else?>
-<div class="message-info">
-<div class="message-info__title">Ошибка!</div>
-<div class="message-info__content">Добавлять комментарии могут только зарегистрированные пользователи.</div>
-</div>
-<?endif?>
-<?endif?>
-</div>
-
-<div class="page__comments-list <?if($COM_NUM_SHOWN$='0')?> has-comms<?endif?>" id="page__comments-list">
-<?if($COM_CAN_READ$)?>$COM_BODY$<?endif?>
-<?if($COM_PAGE_SELECTOR$)?>
-<div class="pagination ignore-select" id="pagination">
-<div class="pagination__pages d-flex jc-center">$COM_PAGE_SELECTOR$</div>
-</div>
-<?endif?>
-<style>#allEntries {display: block !important;}</style>
-</div>
-
-</div>
-<?endif?>
-</div>
+    <!-- Add a form to submit new comments (if logged in) -->
+    <div class="page__comments-form">
+      @*   @if (isLoggedIn)
+        {
+            <!-- Add a comment submission form here -->
+            <!-- Include fields for author, content, etc. -->
+        }
+        else
+        {
+            <div class="message-info">
+                <div class="message-info__title">Ошибка!</div>
+                <div class="message-info__content">Добавлять комментарии могут только зарегистрированные пользователи.</div>
+            </div>
+        } *@
+    </div>
 </div>
 
-<section class="sect">
+</div>
+</div>
+
+@* <section class="sect">
 <h2 class="sect__header sect__title">Смотрите также:</h2>
 <div class="sect__content d-grid">$MYINF_5$</div>
-</section>
+</section> *@
 
 </article>
 <!-- </body> -->
@@ -112,7 +133,7 @@
 </main> <!-- END COL-MAIN -->
 
 <aside class="col-side">
-$GLOBAL_CLEFTER$
+<BlazorAppServer.Components.Informers.RandomFilesInformer Items="@InformerRandomFiles"></BlazorAppServer.Components.Informers.RandomFilesInformer>
 </aside> <!-- END COL-SIDE -->
 </div> <!-- END COLS -->
 </div> <!-- END CONTENT -->
@@ -134,18 +155,20 @@ $GLOBAL_CLEFTER$
     public string SeoUrl { get; set; }
 
     FileModel fileModel = new();
+    List<FileModel> InformerRandomFiles = new();
+    Random rng = new Random();
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-
+        InformerRandomFiles = await fileService.GetLoadsAsync();
         fileModel = await fileService.GetLoadAsync(Convert.ToInt32(Id));
+
+        InformerRandomFiles = InformerRandomFiles.OrderBy(x => rng.Next()).Take(10).ToList();
 
         UpdateBreadcrumb();
 
         fileModel.Views++;
-
-        await fileService.UpdateLoadAsync(fileModel);
     }
 
 
@@ -176,10 +199,9 @@ $GLOBAL_CLEFTER$
     {
         if (string.IsNullOrEmpty(fileModel.DescriptionFull))
         {
-            return new MarkupString(""); // Return an empty string if DescriptionFull is empty
+            return new MarkupString(""); 
         }
 
-        // Replace newline characters with <br> tags
         string htmlDescription = fileModel.DescriptionFull.Replace("\n", "<br>");
 
         return new MarkupString(htmlDescription);

@@ -4,6 +4,7 @@
 @using Enums
 @using System.Globalization;
 @inject IJSRuntime JsRuntime
+@inject CommentService commentService
 
 <h3>Добавить новый материал</h3>
 
@@ -188,6 +189,18 @@
         {
              file.DescriptionFull.Replace(" ", "<br>");
         }
+
+        
+          var testComment = new CommentModel
+            {
+                Author = "Test Author",
+                Content = "This is a test comment.",
+                Timestamp = DateTime.Now,
+                FileModelId = 1002
+            };
+
+
+        var comments = await commentService.InsertLoadAsync(testComment);
 
   
     }

@@ -12,14 +12,17 @@ namespace BlazorAppServer.Data
         {
         }
 
-        //protected override void OnModelCreating(ModelBuilder builder)
-        //{
-        //    builder.Entity<FileModel>().Property(x => x.Id).UseIdentityColumn();
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
 
-        //    base.OnModelCreating(builder);
-        //}
+            modelBuilder.Entity<FileModel>()
+                .HasMany(f => f.Comments)
+                .WithOne(c => c.FileModel) 
+                .HasForeignKey(c => c.FileModelId);
+        }
 
         public DbSet<FileModel> Loads { get; set; }
-      
+        public DbSet<CommentModel> Comments { get; set; }
     }
 }

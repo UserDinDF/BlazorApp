@@ -1,0 +1,129 @@
+﻿@using BlazorAppServer.Data
+@using Microsoft.EntityFrameworkCore
+
+@inject FileService fileService
+<div class="top-informer">
+    <div class="top-informer-l">
+        <div class="top-l"><span>Случайные файлы</span></div>
+        <div class="top-files clr">
+            @foreach (FileModel item in Items)
+            {
+                <div class="top-files-img">
+                    <img src="@item.Image" alt="$TITLE$">
+                </div>
+                <div class="top-files-2">
+                    <div class="top-files-title"><a href="@item.GetFilePath()">@item.Name</a></div>
+                    <div class="top-files-cat"><a href="@item.GetCategoryLink()">@item.Category</a></div>
+                    <div class="top-files-detali">
+                        <span>Просмотров: @item.Views</span> |
+                        <span>Загрузок: @item.Downloads</span>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+
+<style>
+    .top-files {
+        margin-bottom: 5px;
+        padding-bottom: 5px;
+        height: 60px;
+        border-bottom: solid #EDEDED 2px;
+    }
+
+    .top-publ-img, .top-files-img {
+        float: left;
+        width: 60px;
+        height: 60px;
+        padding-right: 10px;
+    }
+
+    .top-files-img img, .top-publ-img img {
+        width: 60px;
+        height: 60px;
+        border-radius: 3px;
+
+        object-fit: cover;
+        padding:2px;
+    }
+
+    .top-files-title {
+        white-space: nowrap;
+        overflow: hidden;
+        -webkit-mask: linear-gradient(to right, rgb(0, 0, 0), rgb(0, 0, 0) 210px, rgba(0, 0, 0, 0));
+        border-bottom: 1px dashed #c3c3c3;
+        padding-bottom: 2px;
+    }
+
+    .top-publ-title a, .top-files-title a {
+        color: #000;
+        display: block;
+    }
+
+    .top-files-cat {
+        overflow: hidden;
+        color: #000;
+        font-size: 12px;
+    }
+
+    .top-files-cat a {
+    }
+
+
+    .top-files-detali span {
+        font-size: 12px;
+    }
+
+    .top-publ {
+        margin-bottom: 5px;
+        padding-bottom: 5px;
+        height: 60px;
+        border-bottom: solid #EDEDED 2px;
+    }
+
+    .top-publ-title {
+    }
+
+    .top-informer {
+        border-bottom: solid 2px #EDEDED;
+        display: inline-block;
+        margin-bottom: 5px;
+    }
+
+    .top-l, .top-r {
+        border-bottom: solid 1px #EDEDED;
+        padding-bottom: 3px;
+        margin-bottom: 4px;
+    }
+
+    .top-l span, .top-r span {
+        font-size: 15px;
+        border-bottom: solid 1px #4E453C;
+        padding-bottom: 5px;
+    }
+
+    .top-informer-l {
+        width: 100%;
+        float: left;
+        border-right: 2px #EDEDED solid;
+        padding-right: 6px;
+        margin-right: 5px;
+    }
+
+    .top-informer-r {
+        width: 49%;
+        float: right;
+    }
+
+    .top-publ:last-child,
+    .top-files:last-child {
+        border-bottom: 0;
+    }
+</style>
+
+@code {
+    [Parameter]
+    public List<FileModel> Items { get; set; }
+}

@@ -7,20 +7,20 @@
 @using BlazorAppServer.Areas.Identity.Data
 
 @inject FileService loadService
-@inject AuthenticationStateProvider AuthenticationStateProvider
-
-@inject SignInManager<BlazorAppServerUser> SignInManager
-@inject UserManager<BlazorAppServerUser> UserManager
 
 <link href="/css/FileStyle.css" rel="stylesheet" type="text/css"/>
 
+<AuthorizeView>
+    <p>Hello, @context.User.Identity?.Name!</p>
+</AuthorizeView>
+
 <div class="breadcrumbNav">
     <BreadcrumbComponent Items="@breadcrumbItems" />
-    <div class="add-file-link">
+  @*   <div class="add-file-link">
         <span class="oi oi-data-transfer-upload" aria-hidden="true"></span>
 
         <a href="/load/add">Добавить файл</a>
-    </div>
+    </div> *@
 </div>
 
 
@@ -31,7 +31,9 @@
         <div class="mini-vid clr">
             <div class="mini-vid-title">
                 <span class="title-icon"><a href="@item.GetFilePath()">@item.Name</a></span>
+               
             </div>
+
             <div class="mini-vid-img-text">
                 <div class="mini-vid-img">
                     <img src="@item.Image" alt="@item.Name">
@@ -41,6 +43,7 @@
                 </div>
             </div>
             <div class="mini-vid-detali">
+                <a href="@item.GetCategoryLink()"><span class="reads">@item.Category</span></a>
                 <span class="dates">@item.CreationTime</span>
                 <span class="reads">@item.Views просмотров</span>
                 <span class="coments">@item.Comments комментариев</span>
@@ -56,7 +59,7 @@
     protected override async Task OnInitializedAsync()
     {
         FileList = await loadService.GetLoadsAsync();
-    }
+}
 
     private List<Components.BreadcrumbItem> breadcrumbItems = new List<Components.BreadcrumbItem>
     {

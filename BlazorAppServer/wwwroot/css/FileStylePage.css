@@ -369,7 +369,8 @@
 }
 
 .short__header, .short__desc {
-    padding: 40px;
+    margin-top:-0px;
+    padding-left: 10px;
 }
 
 .short__title {

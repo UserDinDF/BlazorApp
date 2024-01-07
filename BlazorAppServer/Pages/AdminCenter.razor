@@ -8,7 +8,6 @@
 @using BlazorAppServer.Components.Informers
 
 @inject FileService loadService
-@inject AuthenticationStateProvider AuthenticationStateProvider
 
 @inject SignInManager<BlazorAppServerUser> SignInManager
 @inject UserManager<BlazorAppServerUser> UserManager
@@ -18,7 +17,6 @@
 
 
 <LastFilesInformerDataGrid/>
-
 
 @code {
     List<FileModel> FileList;

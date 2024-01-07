@@ -11,3 +11,11 @@
 @using BlazorAppServer.Components
 @using MudBlazor
 @using BlazorAppServer.Pages
+@using Microsoft.AspNetCore.Identity
+@using Enums
+@using BlazorAppServer.Areas.Identity.Data
+
+@inject UserManager<BlazorAppServerUser> _UserManager
+@inject RoleManager<IdentityRole> _RoleManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IJSRuntime js

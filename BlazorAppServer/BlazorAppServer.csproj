@@ -41,6 +41,7 @@
   <ItemGroup>
     <Folder Include="Components\Pages\" />
     <Folder Include="Migrations\" />
+    <Folder Include="Pages\Админка\" />
   </ItemGroup>
 
 </Project>

@@ -27,19 +27,33 @@ namespace BlazorAppServer.Enums
             return (attributes.Length > 0) ? ((UrlSlugAttribute)attributes[0]).UrlSlug : string.Empty;
         }
 
-        public static string GetCategoryNameFromSlug(string slug)
+        public static string GetCategoryNameFromSlug(string slug, bool ru)
         {
             var category = CategoriesList.FirstOrDefault(c => c.Key == slug);
 
             if (category.Key != null)
             {
                 category = CategoriesList.FirstOrDefault(c => c.Value == slug);
-                return category.Key;
+                if (category.Key != null)
+                    return category.Key;
+                else
+                {
+                    category = CategoriesList.FirstOrDefault(c => c.Key == slug);
+                    return category.Value;
+                }
             }
             else
             {
-                category = CategoriesList.FirstOrDefault(c => c.Value == slug);
-                return category.Key;
+                if (ru)
+                {
+                    category = CategoriesList.FirstOrDefault(c => c.Value == slug);
+                    return category.Key;
+                }
+               
+                else
+                {
+                    return category.Value;
+                }
             }
         }
 

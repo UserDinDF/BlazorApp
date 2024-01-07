@@ -70,7 +70,7 @@ else
 
     private void UpdateBreadcrumb()
     {
-        string categoryName = Enums.EnumHelper.GetCategoryNameFromSlug(categorieUrl);
+        string categoryName = Enums.EnumHelper.GetCategoryNameFromSlug(categorieUrl, true);
         breadcrumbItems[2] = new Components.BreadcrumbItem
             {
                 DisplayName = categoryName,
@@ -84,7 +84,7 @@ else
     {
         if (isPageInitialized)
         {
-            string categoryName = Enums.EnumHelper.GetCategoryNameFromSlug(_categorieUrl);
+            string categoryName = Enums.EnumHelper.GetCategoryNameFromSlug(_categorieUrl, false);
             FileList = await fileService.GetLoadFromCategorie(categoryName);
         }
     }

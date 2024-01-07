@@ -10,6 +10,8 @@ namespace BlazorAppServer.Data
     [Table("Files", Schema = "data")]
     public class FileModel
     {
+        public ICollection<CommentModel> Comments { get; set; } = new List<CommentModel>(); // Collection navigation property
+
         [Key]
         public int Id { get; set; }
 
@@ -44,7 +46,6 @@ namespace BlazorAppServer.Data
         public string Keywords { get; set; }
         public int Views { get; set; }
         public int Downloads { get; set; }
-        public int Comments { get; set; }
         public float Rating { get; set; }
 
         public string Price { get; set; }
@@ -56,7 +57,7 @@ namespace BlazorAppServer.Data
         public string DownloadFileName { get; set; }
         public string GetCategoryLink()
         { 
-            var categoryName = Enums.EnumHelper.GetCategoryNameFromSlug(Category);
+            var categoryName = Enums.EnumHelper.GetCategoryNameFromSlug(Category, false);
 
             return $"/load/{categoryName}/{Seo_Url}";
         }
