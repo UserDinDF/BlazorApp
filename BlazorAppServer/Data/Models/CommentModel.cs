@@ -1,8 +1,11 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using BlazorAppServer;
+using BlazorAppServer.Data;
+using BlazorAppServer.Data.Models;
 
-namespace BlazorAppServer.Data
+namespace BlazorAppServer.Data.Models
 {
     [Table("Comments", Schema = "data")]
     public class CommentModel

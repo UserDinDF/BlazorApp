@@ -1,9 +1,10 @@
 ﻿@page "/load/{Id}/{SeoUrl}"
 @using BlazorAppServer.Data
+@using BlazorAppServer.Data.Models
 @using BlazorAppServer.Components
 @using BlazorAppServer.Enums
-@inject FileService fileService
-@inject CommentService commentService
+
+@inject FileService commentService
 @inject NavigationManager navigationManager
 
 <PageTitle>@GetTitle()</PageTitle>
@@ -47,7 +48,7 @@
 
 <MudGrid Justify="Justify.FlexStart" Style="border-radius:1px">
     <MudItem Style="height:300px;">
-        <MudImage Src="@fileModel.Image" Height="280" Alt="Swedish Farm House" Elevation="25" Class="rounded-lg ma-4"/>
+        <MudImage Src="@fileModel.GetFirstImageUrl()" Height="280" Alt="Swedish Farm House" Elevation="25" Class="rounded-lg ma-4"/>
     </MudItem>
 
     <MudItem>
@@ -86,7 +87,7 @@
 
 <div class="page__comments">
     <div class="page__comments-form">
-        <LoadCommentAddForm Comments="@Comments" CurrentFile="@fileModel"/>
+        <LoadCommentAddForm Comments="@fileModel.Comments" CurrentFile="@fileModel"/>
     </div>
 </div>
 
@@ -128,16 +129,17 @@
     List<FileModel> files = new();
     FileModel fileModel = new();
     List<FileModel> InformerRandomFiles = new();
-    List<CommentModel> Comments = new();
+
     Random rng = new Random();
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
 
-        files = await fileService.GetLoadsAsync();
-        fileModel = await fileService.GetLoadAsync(Convert.ToInt32(Id));
-        Comments = await commentService.GetCommentsAsync();
+        files = await commentService.fileRepository.GetLoadsAsync();
+        fileModel = await commentService.fileRepository.GetLoadAsync(Convert.ToInt32(Id));
+        fileModel.Image = await commentService.imageRepository.GetImagesAsync(Convert.ToInt32(fileModel));
+        fileModel.Comments = await commentService.commentRepository.GetCommentsAsync();
 
         InformerRandomFiles = files;
         InformerRandomFiles = InformerRandomFiles.OrderBy(x => rng.Next()).Take(10).ToList();

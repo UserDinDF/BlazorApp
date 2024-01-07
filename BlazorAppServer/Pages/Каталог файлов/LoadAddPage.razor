@@ -1,10 +1,12 @@
 ﻿@page "/load/add"
-@using BlazorAppServer.Data
-@inject FileService fileService
+@using BlazorAppServer.Data.Models
+@inject FileRepository fileService
 @using Enums
 @using System.Globalization;
+@using BlazorAppServer.Data.Services
+
 @inject IJSRuntime JsRuntime
-@inject CommentService commentService
+@inject CommentRepository commentService
 
 <h3>Добавить новый материал</h3>
 
@@ -164,7 +166,7 @@
             AlertText ="SEO-Url отсутствует";
             return false;
         }
-        if (String.IsNullOrEmpty(file.Image))
+        if (String.IsNullOrEmpty(file.GetFirstImageUrl()))
         {
             AlertText = "Ссылка на изображение отсутствует";
             return false;

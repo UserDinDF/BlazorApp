@@ -1,12 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using BlazorAppServer.Data;
+using BlazorAppServer;
+using BlazorAppServer.Data.Services;
+using BlazorAppServer.Data.Models;
 
-namespace BlazorAppServer.Data
+namespace BlazorAppServer.Data.Services
 {
-    public class CommentService
+    public class CommentRepository
     {
         private readonly ApplicationDbContext _service;
-        public CommentService(ApplicationDbContext service)
+        public CommentRepository(ApplicationDbContext service)
         {
             _service = service;
         }
@@ -21,7 +24,7 @@ namespace BlazorAppServer.Data
         public async Task<List<CommentModel>> GetCommentsForFileAsync(int fileId)
         {
             return await _service.Comments
-                .Where(c => c.FileModelId == fileId)
+                .Where(c => c.FileModel.Id == fileId)
                 .ToListAsync();
         }
 

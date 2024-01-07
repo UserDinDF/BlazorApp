@@ -4,10 +4,11 @@
 @using Microsoft.AspNetCore.Identity
 @using Enums
 @using BlazorAppServer.Areas.Identity.Data
-@using BlazorAppServer.Data
+@using BlazorAppServer.Data.Models
+@using BlazorAppServer.Data.Services
 @using BlazorAppServer.Components.Informers
 
-@inject FileService loadService
+@inject FileRepository loadService
 
 @inject SignInManager<BlazorAppServerUser> SignInManager
 @inject UserManager<BlazorAppServerUser> UserManager

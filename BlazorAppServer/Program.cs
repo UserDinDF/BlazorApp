@@ -14,6 +14,7 @@ using BlazorAppServer.Areas.Identity.Data;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.Components.Server;
+using BlazorAppServer.Data.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 //var connectionString = builder.Configuration.GetConnectionString("BlazorAppServerContextConnection") ?? throw new InvalidOperationException("Connection string 'BlazorAppServerContextConnection' not found.");
@@ -61,8 +62,10 @@ builder.Services.AddMudServices();
 
 builder.Services.AddLocalization();
 
+builder.Services.AddScoped<FileRepository>();
+builder.Services.AddScoped<CommentRepository>();
+builder.Services.AddScoped<ImageRepository>();
 builder.Services.AddScoped<FileService>();
-builder.Services.AddScoped<CommentService>();
 
 var app = builder.Build();
 //using (var scope = builder.Services.BuildServiceProvider().CreateScope())

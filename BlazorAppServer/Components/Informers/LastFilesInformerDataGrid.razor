@@ -1,5 +1,6 @@
-﻿@using BlazorAppServer.Data
+﻿@using BlazorAppServer.Data.Models
 @using Microsoft.EntityFrameworkCore
+@using BlazorAppServer.Data
 
 @inject FileService fileService
 
@@ -41,7 +42,7 @@ else
 
     private async Task LoadFiles()
     {
-        lastFilesLists = await fileService.GetLoadsAsync();
+        lastFilesLists = await fileService.fileRepository.GetLoadsAsync();
         lastFilesLists = lastFilesLists.OrderBy(x => x.CreationTime).Take(10).ToList();
     }
 

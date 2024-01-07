@@ -4,13 +4,17 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using static MudBlazor.CategoryTypes;
 using BlazorAppServer.Enums;
+using BlazorAppServer.Data.Models;
+using BlazorAppServer;
+using BlazorAppServer.Data;
 
-namespace BlazorAppServer.Data
+namespace BlazorAppServer.Data.Models
 {
     [Table("Files", Schema = "data")]
     public class FileModel
     {
-        public ICollection<CommentModel> Comments { get; set; } = new List<CommentModel>(); // Collection navigation property
+        public ICollection<CommentModel> Comments { get; set; } = new List<CommentModel>();
+        public ICollection<ImageModel> Image { get; set; } = new List<ImageModel>();
 
         [Key]
         public int Id { get; set; }
@@ -25,11 +29,10 @@ namespace BlazorAppServer.Data
 
         [Required(ErrorMessage = "Выберите категорию")]
         public string Category { get; set; }
-     
+
         public DateTime CreationTime { get; set; }
         public DateTime UpdateTime { get; set; }
         public string DownloadUrl { get; set; }
-        public string Image { get; set; }
         public string Language { get; set; }
 
         [Required(ErrorMessage = "Название страницы обязательно")]
@@ -56,8 +59,8 @@ namespace BlazorAppServer.Data
         public string DownloadSize { get; set; }
         public string DownloadFileName { get; set; }
         public string GetCategoryLink()
-        { 
-            var categoryName = Enums.EnumHelper.GetCategoryNameFromSlug(Category, false);
+        {
+            var categoryName = EnumHelper.GetCategoryNameFromSlug(Category, false);
 
             return $"/load/{categoryName}/{Seo_Url}";
         }
@@ -65,6 +68,13 @@ namespace BlazorAppServer.Data
         public string GetFilePath()
         {
             return $"/load/{Id}/{Seo_Url}";
+        }
+
+        public string GetFirstImageUrl()
+        {
+            if (Image.Count == 0) return "";
+
+            return Image.FirstOrDefault().ImageURL;
         }
     }
 }

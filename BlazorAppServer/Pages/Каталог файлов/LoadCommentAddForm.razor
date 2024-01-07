@@ -1,5 +1,7 @@
-﻿@using BlazorAppServer.Data
-@inject CommentService commentService
+﻿@using BlazorAppServer.Data.Models;
+@using BlazorAppServer.Data
+
+@inject FileService commentService
 
     <div class="page__comments-header">
         <div class="page__comments-title">Комментарии</div>
@@ -65,7 +67,7 @@
     public bool AlertIsVisible { get; set; }
     public string AlertText { get; set; }
 
-    [Parameter] public List<CommentModel> Comments { get; set; }
+    [Parameter] public ICollection<CommentModel> Comments { get; set; }
     [Parameter] public FileModel CurrentFile { get; set; }
 
     private bool isButtonDisabled = true;
@@ -142,17 +144,17 @@
                 Author = author,
                 Content = commentText,
                 Timestamp = DateTime.Now,
-                FileModelId = CurrentFile.Id
+                FileModel = CurrentFile
             };
 
-        bool result = await commentService.InsertLoadAsync(newComment);
+        bool result = await commentService.commentRepository.InsertLoadAsync(newComment);
 
         if (result)
         {
             author = string.Empty;
             commentText = string.Empty;
 
-            CurrentFile.Comments = await commentService.GetCommentsForFileAsync(CurrentFile.Id);
+            CurrentFile.Comments = await commentService.commentRepository.GetCommentsForFileAsync(CurrentFile.Id);
             GenerateCaptcha(); 
         }
     }

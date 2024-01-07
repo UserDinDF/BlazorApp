@@ -1,10 +1,11 @@
 ﻿@page "/load"
 
 @using BlazorAppServer.Data
+@using BlazorAppServer.Data.Models
 @using BlazorAppServer.Components
 @using Microsoft.AspNetCore.Identity
 @using Enums
-@using BlazorAppServer.Areas.Identity.Data
+@using BlazorAppServer.Areas.Identity.Data;
 
 @inject FileService loadService
 
@@ -36,7 +37,7 @@
 
             <div class="mini-vid-img-text">
                 <div class="mini-vid-img">
-                    <img src="@item.Image" alt="@item.Name">
+                    <img src="@item.GetFirstImageUrl()" alt="@item.Name">
                 </div>
                 <div class="mini-vid-text">
                     @item.Description
@@ -58,8 +59,13 @@
 
     protected override async Task OnInitializedAsync()
     {
-        FileList = await loadService.GetLoadsAsync();
-}
+        FileList = await loadService.fileRepository.GetLoadsAsync();
+
+        foreach (FileModel item in FileList)
+        {
+            item.Image = await loadService.imageRepository.GetImagesAsync(item.Id);
+        }
+    }
 
     private List<Components.BreadcrumbItem> breadcrumbItems = new List<Components.BreadcrumbItem>
     {

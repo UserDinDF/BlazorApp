@@ -6,7 +6,31 @@
 @using Enums
 @using BlazorAppServer.Areas.Identity.Data
 @using System.Security.Claims
+@using BlazorAppServer.Data.Services
 
 @inject NavigationManager NavigationManager
+@inject ImageRepository imageServices
+@inject FileRepository fileServices
 
 <PageTitle>Index</PageTitle>
+
+@code
+{
+    protected override async Task OnInitializedAsync()
+    {
+
+    //     FileModel model = await fileServices.GetLoadAsync(1002);
+
+    //     ImageModel imgmodel = new()
+    //         {
+    //             ImageURL = @"https://softportal.pro/assets/images/resources/786/original/2021-12-03-14-08-29-postman.png",
+    //              Description = "Test description",
+    //             FileModel = model,
+    //              FileModelId = model.Id
+    // };
+
+    //     imageServices.InsertLoadAsync(imgmodel);
+
+
+    }
+}
