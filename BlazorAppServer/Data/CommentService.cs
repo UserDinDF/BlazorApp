@@ -18,6 +18,13 @@ namespace BlazorAppServer.Data
             return await _service.Comments.ToListAsync();
         }
 
+        public async Task<List<CommentModel>> GetCommentsForFileAsync(int fileId)
+        {
+            return await _service.Comments
+                .Where(c => c.FileModelId == fileId)
+                .ToListAsync();
+        }
+
 
         public async Task<CommentModel> GetLoadAsync(int id)
         {

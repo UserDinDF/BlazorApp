@@ -36,7 +36,7 @@
         <MudTextField Label="SEO-Keywords" @bind-Value="file.Seo_Keywords"></MudTextField>
     </MudItem>
     <MudItem xs="12">
-        <MudTextField Label="SEO-Url"  TextChanged="SeoUrlTextChanged" @bind-Value="file.Seo_Url"></MudTextField>
+        <MudTextField Label="SEO-Url" TextChanged="SeoUrlTextChanged" @bind-Value="file.Seo_Url"></MudTextField>
     </MudItem>
     <MudItem xs="12">
         <MudTextField Label="Ссылка на изображение" @bind-Value="file.Image"></MudTextField>
@@ -189,20 +189,6 @@
         {
              file.DescriptionFull.Replace(" ", "<br>");
         }
-
-        
-          var testComment = new CommentModel
-            {
-                Author = "Test Author",
-                Content = "This is a test comment.",
-                Timestamp = DateTime.Now,
-                FileModelId = 1002
-            };
-
-
-        var comments = await commentService.InsertLoadAsync(testComment);
-
-  
     }
 
     protected override async Task OnInitializedAsync()

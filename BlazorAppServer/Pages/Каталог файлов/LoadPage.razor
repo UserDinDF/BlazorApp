@@ -82,40 +82,11 @@
 
 <div class="page__tags"><span class="fal fa-tags"></span>@fileModel.Keywords</div>
 
-
+<MudDivider />
 
 <div class="page__comments">
-    <div class="page__comments-header">
-        <div class="page__comments-title">Комментарии</div>
-        <!-- Add any additional comment-related information here -->
-    </div>
-
-    <!-- Display comments -->
-    <div class="page__comments-list">
-        @foreach (var comment in fileModel.Comments)
-        {
-            <div class="comment">
-                <div class="comment-author">@comment.Author</div>
-                <div class="comment-content">@comment.Content</div>
-                <div class="comment-timestamp">@comment.Timestamp.ToString("yyyy-MM-dd HH:mm:ss")</div>
-            </div>
-        }
-    </div>
-
-    <!-- Add a form to submit new comments (if logged in) -->
     <div class="page__comments-form">
-      @*   @if (isLoggedIn)
-        {
-            <!-- Add a comment submission form here -->
-            <!-- Include fields for author, content, etc. -->
-        }
-        else
-        {
-            <div class="message-info">
-                <div class="message-info__title">Ошибка!</div>
-                <div class="message-info__content">Добавлять комментарии могут только зарегистрированные пользователи.</div>
-            </div>
-        } *@
+        <LoadCommentAddForm Comments="@Comments" CurrentFile="@fileModel"/>
     </div>
 </div>
 
@@ -154,16 +125,21 @@
     [Parameter]
     public string SeoUrl { get; set; }
 
+    List<FileModel> files = new();
     FileModel fileModel = new();
     List<FileModel> InformerRandomFiles = new();
+    List<CommentModel> Comments = new();
     Random rng = new Random();
 
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        InformerRandomFiles = await fileService.GetLoadsAsync();
-        fileModel = await fileService.GetLoadAsync(Convert.ToInt32(Id));
 
+        files = await fileService.GetLoadsAsync();
+        fileModel = await fileService.GetLoadAsync(Convert.ToInt32(Id));
+        Comments = await commentService.GetCommentsAsync();
+
+        InformerRandomFiles = files;
         InformerRandomFiles = InformerRandomFiles.OrderBy(x => rng.Next()).Take(10).ToList();
 
         UpdateBreadcrumb();
