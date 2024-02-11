@@ -2,7 +2,9 @@
 
 <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="">BlazorAppServer</a>
+        <div class="logo-wrap">
+            <a class="logo-lnk" href="/">Soft-Portal</a>
+        </div>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -10,23 +12,53 @@
 </div>
 
 <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-    <MudPaper Width="250px" Style="background-color:transparent; color:white;font-size: 12px;"  Class="d-inline-flex py-3" Elevation="1">
-        <MudNavMenu Class="mud-width-full">
-            <MudText Typo="Typo.h6" Class="px-4">Навигация</MudText>
-            <MudDivider Class="my-2" />
-            <MudNavLink Href="/" Icon="@Icons.Material.Filled.Dashboard">Главная страница</MudNavLink>
-            <MudNavGroup Title="Каталог файлов" HideExpandIcon="false" Icon="@Icons.Material.Filled.Settings">
-                 @foreach (var item in CategoriesList)
+    <MudPaper Width="250px" Class="py-3" Style="background-color: transparent; color:white;" Elevation="0">
+        <MudNavMenu Dense="true" Color="Color.Info">
+            <MudNavLink Href="/" Match="NavLinkMatch.Prefix"  Icon="@Icons.Material.Filled.Dashboard">Главная страница</MudNavLink>
+            <MudNavLink Href="/" Icon="@Icons.Material.Filled.Forum">Форум</MudNavLink>
+       
+            <MudNavGroup Title="Каталог файлов" Expanded="true" HideExpandIcon="false">
+                @foreach (var item in CategoriesList)
                 {
-                    <a href="/load/@item.Value">
-                        <MudNavGroup Style="color:white;font-size:11px;" Title="@item.Key" HideExpandIcon="true" Icon="@Icons.Material.Filled.AdminPanelSettings" IconColor="Color.Dark"></MudNavGroup>
-                </a>
+                    <a href="/load/@item.Value"><MudNavGroup Style="color:white;font-size:11px;" Title="@item.Key" HideExpandIcon="true" Icon="@Icons.Material.Filled.AdminPanelSettings" IconColor="Color.Dark"></MudNavGroup></a>
                 }
             </MudNavGroup>
         </MudNavMenu>
     </MudPaper>
+   
 </div>
 
+
+
+
+<style>
+    .logo-wrap {
+        -ms-flex-positive: 1;
+        flex-grow: 1;
+        width: 30%
+    }
+
+    .logo-lnk {
+        transition: color .3s;
+        vertical-align: middle;
+        text-decoration: none;
+        color: #fff;
+        font-weight: 700;
+        line-height: 36px
+    }
+
+    .logo-lnk, .sidetitle {
+        font-size: 22px;
+        text-transform: uppercase
+    }
+
+    .logo-wrap {
+        width: auto;
+        text-align: center
+    }
+
+
+</style>
 @code {
 
     Dictionary<string, string> CategoriesList = Enum.GetValues(typeof(Categories))

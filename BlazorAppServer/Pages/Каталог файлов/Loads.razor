@@ -9,21 +9,23 @@
 
 @inject FileService loadService
 
-<link href="/css/FileStyle.css" rel="stylesheet" type="text/css"/>
+@inject SignInManager<BlazorAppServerUser> SignInManager
+@inject UserManager<BlazorAppServerUser> UserManager
 
-<AuthorizeView>
-    <p>Hello, @context.User.Identity?.Name!</p>
-</AuthorizeView>
+<link href="/css/FileStyle.css" rel="stylesheet" type="text/css"/>
 
 <div class="breadcrumbNav">
     <BreadcrumbComponent Items="@breadcrumbItems" />
-  @*   <div class="add-file-link">
-        <span class="oi oi-data-transfer-upload" aria-hidden="true"></span>
-
-        <a href="/load/add">Добавить файл</a>
-    </div> *@
 </div>
 
+<table border="0" style="margin-left:10px;margin-bottom:10px;font-size:12px;" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+        <td width="60%">Всего материалов в каталоге: <b>@TotalFilesCount</b><br />Показано материалов: <b>@VisibleFiles</b></td>
+        <td align="right">
+           <MudPagination Variant="Variant.Filled" Style="margin-bottom:5px;margin-right:10px;" Count="@TotalPages" @bind-Selected="@_selected" />
+        </td>
+</tr>
+</table>
 
 @if (FileList != null || FileList?.Count == 0)
 {
@@ -47,24 +49,65 @@
                 <a href="@item.GetCategoryLink()"><span class="reads">@item.Category</span></a>
                 <span class="dates">@item.CreationTime</span>
                 <span class="reads">@item.Views просмотров</span>
-                <span class="coments">@item.Comments комментариев</span>
+                <span class="coments">@item.Comments.Count комментариев</span>
                 <span><a href="@item.GetFilePath()">Открыть</a></span>
             </div>
         </div>
     }
 }
 
+<MudPagination Style="justify-content: center;align-items: center;display: flex;margin-bottom:10px; margin-top:-20px;"
+               Variant="Variant.Filled"
+               Count="@TotalPages"
+               @bind-Selected="@_selected" />
+
 @code {
     List<FileModel> FileList;
+    private int _selectedPage = 1;
+
+    [Parameter] public int TotalPages { get; set; } = 0;
+    [Parameter] public int PageSize { get; set; } = 5;
+    [Parameter] public int TotalFilesCount { get; set; }
+    [Parameter] public int VisibleFiles { get; set; } = 0;
 
     protected override async Task OnInitializedAsync()
     {
-        FileList = await loadService.fileRepository.GetLoadsAsync();
+        await LoadFiles();
+    }
+
+    private int _selected
+    {
+        get => _selectedPage;
+        set
+        {
+            if (_selectedPage != value)
+            {
+                _selectedPage = value;
+                LoadFiles();
+            }
+        }
+    }
+
+    private async Task LoadFiles()
+    {
+        var allFiles = await loadService.fileRepository.GetLoadsAsync();
+        TotalFilesCount = allFiles.Count();
+        TotalPages = (int)Math.Ceiling(allFiles.Count / (double)PageSize);
+
+        FileList = allFiles
+            .Skip((_selectedPage - 1) * PageSize)
+            .Take(PageSize)
+            .ToList();
 
         foreach (FileModel item in FileList)
         {
             item.Image = await loadService.imageRepository.GetImagesAsync(item.Id);
+            item.Comments = await loadService.commentRepository.GetCommentsForFileAsync(item.Id);
         }
+
+        VisibleFiles = FileList.Count();
+
+        StateHasChanged();
     }
 
     private List<Components.BreadcrumbItem> breadcrumbItems = new List<Components.BreadcrumbItem>

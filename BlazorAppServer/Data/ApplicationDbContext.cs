@@ -17,15 +17,17 @@ namespace BlazorAppServer.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<FileModel>()
-                .HasMany(f => f.Comments)
-                .WithOne(c => c.FileModel) 
-                .HasForeignKey(c => c.FileModelId);
+            //base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<FileModel>()
-             .HasMany(f => f.Image)
-             .WithOne(c => c.FileModel)
-             .HasForeignKey(c => c.FileModelId);
+            //modelBuilder.Entity<FileModel>()
+            //    .HasMany(f => f.Comments)
+            //    .WithOne(c => c.FileModel) 
+            //    .HasForeignKey(c => c.FileModelId);
+
+            //modelBuilder.Entity<FileModel>()
+            // .HasMany(f => f.Image)
+            // .WithOne(c => c.FileModel)
+            // .HasForeignKey(c => c.FileModelId);
         }
 
         public DbSet<FileModel> Loads { get; set; }

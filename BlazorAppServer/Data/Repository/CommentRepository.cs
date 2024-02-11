@@ -29,13 +29,13 @@ namespace BlazorAppServer.Data.Services
         }
 
 
-        public async Task<CommentModel> GetLoadAsync(int id)
+        public async Task<CommentModel> GetCommentAsync(int id)
         {
             CommentModel load = await _service.Comments.SingleOrDefaultAsync(x => x.Id == id);
             return load;
         }
 
-        public async Task<bool> InsertLoadAsync(CommentModel load)
+        public async Task<bool> InsertCommentAsync(CommentModel load)
         {
             await _service.Comments.AddAsync(load);
             await _service.SaveChangesAsync();
@@ -51,7 +51,7 @@ namespace BlazorAppServer.Data.Services
             return true;
         }
 
-        public async Task<bool> UpdateLoadAsync(CommentModel load)
+        public async Task<bool> UpdateCommentAsync(CommentModel load)
         {
             _service.Comments.Update(load);
             await _service.SaveChangesAsync();

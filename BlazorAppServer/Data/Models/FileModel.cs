@@ -2,7 +2,6 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using static MudBlazor.CategoryTypes;
 using BlazorAppServer.Enums;
 using BlazorAppServer.Data.Models;
 using BlazorAppServer;
@@ -62,7 +61,7 @@ namespace BlazorAppServer.Data.Models
         {
             var categoryName = EnumHelper.GetCategoryNameFromSlug(Category, false);
 
-            return $"/load/{categoryName}/{Seo_Url}";
+            return $"/load/{categoryName}";
         }
 
         public string GetFilePath()

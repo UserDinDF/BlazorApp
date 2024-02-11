@@ -10,6 +10,33 @@
     <main>
         <div class="top-row px-4">
 
+          <AuthorizeView>
+    <Authorized>
+        <MudPaper Elevation="25" MaxHeight="30px" MaxWidth="200px" Style="margin-right:10px; position:absolute;left:5px;">
+            <MudToolBar WrapContent="true">
+                            <MudMenu Icon="@Icons.Material.Outlined.Add" Size="Size.Small" Style="margin-bottom:32px;">
+                              
+                                <MudLink Href="/load/add"><MudMenuItem>Добавить файл</MudMenuItem></MudLink>
+                 
+                         
+                            </MudMenu>
+                <MudIconButton Icon="@Icons.Material.Outlined.Edit" Size="Size.Small" Style="margin-bottom:32px;" />
+                <MudIconButton Icon="@Icons.Material.Outlined.Remove" Size="Size.Small" Color="Color.Inherit" Style="margin-bottom:32px;" />
+                <MudIconButton Icon="@Icons.Material.Outlined.Settings" Size="Size.Small" Color="Color.Inherit" Style="margin-bottom:32px;" />
+            </MudToolBar>
+        </MudPaper>
+    </Authorized>
+</AuthorizeView>
+
+
+            <AuthorizeView>
+                <Authorized>
+                    <p style="margin-top:15px;">Добро пожаловать, @context.User.Identity?.Name!</p>
+                </Authorized>
+                <NotAuthorized>
+                    <p style="margin-top:15px;">Добро пожаловать Гость</p>
+                </NotAuthorized>
+            </AuthorizeView>
         </div>
       
         <article class="content px-4">
@@ -17,6 +44,17 @@
             <MudDialogProvider />
             <MudSnackbarProvider />
             @Body
+            <MudScrollToTop>
+                <MudFab Color="Color.Tertiary" Style="margin-right:50px;" DisableElevation="false" IconSize="Size.Small" StartIcon="@Icons.Material.Filled.ArrowCircleUp" />
+            </MudScrollToTop>
         </article>
     </main>
 </div>
+
+@code
+{
+    private void SecureMethod()
+    {
+        
+    }
+}

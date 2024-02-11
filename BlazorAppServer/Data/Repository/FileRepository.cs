@@ -6,9 +6,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BlazorAppServer.Data.Services
 {
-    public class FileRepository
+    public class FileRepository : IFileUpdatePublisher
     {
+        public event Action OnFileUpdated;
+
         private readonly ApplicationDbContext _service;
+  
         public FileRepository(ApplicationDbContext service)
         {
             _service = service;
@@ -38,7 +41,7 @@ namespace BlazorAppServer.Data.Services
         {
             await _service.Loads.AddAsync(load);
             await _service.SaveChangesAsync();
-
+            NotifyFileUpdated(); 
             return true;
         }
 
@@ -46,7 +49,7 @@ namespace BlazorAppServer.Data.Services
         {
             _service.Loads.Remove(load);
             await _service.SaveChangesAsync();
-
+            NotifyFileUpdated();
             return true;
         }
 
@@ -57,5 +60,14 @@ namespace BlazorAppServer.Data.Services
 
             return true;
         }
+
+        public void NotifyFileUpdated() => OnFileUpdated?.Invoke();
+
+    }
+
+    public interface IFileUpdatePublisher
+    {
+        event Action OnFileUpdated;
+        void NotifyFileUpdated();
     }
 }

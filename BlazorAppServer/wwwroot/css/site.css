@@ -12,6 +12,13 @@ a, .btn-link {
     color: #0071c1;
 }
 
+a:link:hover {
+    color: #31318c;
+    text-decoration: underline
+}
+
+
+
 .btn-primary {
     color: #fff;
     background-color: #1b6ec2;
@@ -80,12 +87,13 @@ a, .btn-link {
     border-bottom: solid 1px #CDCDCD;
     margin-block: 0px 10px;
     padding: 5px 5px 10px 10px;
-    height: 30px;
+    height: 23px;
     writing-mode: horizontal-tb;
 }
 
 .breadcrumb {
     flex: 1; /* Let the breadcrumb take up the available space */
+    font-size:10px;
 }
 
     .breadcrumb ol {

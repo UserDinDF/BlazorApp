@@ -22,8 +22,6 @@ namespace BlazorAppServer.Data.Models
         [Required(ErrorMessage = "Timestamp is required")]
         public DateTime Timestamp { get; set; }
 
-        public int FileModelId { get; set; }
-
         public FileModel FileModel { get; set; }
     }
 }

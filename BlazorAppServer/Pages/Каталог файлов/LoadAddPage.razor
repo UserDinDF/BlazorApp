@@ -1,86 +1,106 @@
 ﻿@page "/load/add"
 @using BlazorAppServer.Data.Models
-@inject FileRepository fileService
+
 @using Enums
 @using System.Globalization;
 @using BlazorAppServer.Data.Services
+@using Microsoft.AspNetCore.Authorization
+
+@attribute [Authorize(Roles = "Administrator")]
+
+@inject SignInManager<BlazorAppServerUser> SignInManager
+@inject UserManager<BlazorAppServerUser> UserManager
 
 @inject IJSRuntime JsRuntime
 @inject CommentRepository commentService
 
-<h3>Добавить новый материал</h3>
+@inject FileRepository fileService
 
-<MudGrid>
-    <MudItem xs="12">
-        <MudTextField Label="Название материала" @bind-Value="file.Name" Immediate="true" OnKeyUp="@FileNameChanged"></MudTextField>
-    </MudItem>
-    <MudItem xs="12">
-        <MudSelect T="string" Label="Категория" @bind-Value="SelectedCategory">
-            @foreach (var item in CategoriesList)
-            {
-                <MudSelectItem Value="@item">@item</MudSelectItem>
-            }
-        </MudSelect>
-    </MudItem>
-    <MudItem xs="12">
-        <MudTextField Label="Краткое описание" @bind-Value="file.Description" T="string" Multiline="true" Rows="4"></MudTextField>
-    </MudItem>
-    <MudItem xs="12">
-        <MudTextField T="string" Label="Полное описание" Variant="Variant.Text" @bind-Value="file.DescriptionFull" AutoGrow HelperText="" />
-    </MudItem>
-    <MudItem xs="12">
-        <MudTextField Label="SEO-Title" @bind-Value="file.Seo_Title"></MudTextField>
-    </MudItem>
-    <MudItem xs="12">
-        <MudTextField Label="SEO-Description" @bind-Value="file.Seo_Description"></MudTextField>
-    </MudItem>
-    <MudItem xs="12">
-        <MudTextField Label="SEO-Keywords" @bind-Value="file.Seo_Keywords"></MudTextField>
-    </MudItem>
-    <MudItem xs="12">
-        <MudTextField Label="SEO-Url" TextChanged="SeoUrlTextChanged" @bind-Value="file.Seo_Url"></MudTextField>
-    </MudItem>
-    <MudItem xs="12">
-        <MudTextField Label="Ссылка на изображение" @bind-Value="file.Image"></MudTextField>
-    </MudItem>
-    <MudItem xs="12">
-        <MudTextField Label="Ключевые слова" @bind-Value="file.Keywords"></MudTextField>
-    </MudItem>
-    <MudItem xs="12">
-        <MudTextField Label="Ссылка на скачивание" @bind-Value="file.DownloadUrl"></MudTextField>
-    </MudItem>
-      <MudItem xs="12">
-        <MudTextField Label="Название скачиваемого файла" @bind-Value="file.DownloadFileName"></MudTextField>
-    </MudItem>
-    <MudItem xs="12">
-        <MudTextField Label="Размер файла" @bind-Value="file.DownloadSize"></MudTextField>
-    </MudItem>
-        <MudItem xs="12">
-        <MudTextField Label="Цена" @bind-Value="file.Price"></MudTextField>
-    </MudItem>
+<AuthorizeView>
+    <Authorized>
+        <MudGrid Style="margin:5px;">
+            <MudItem xs="12">
+                <MudTextField Label="Название материала" @bind-Value="file.Name" Immediate="true" OnKeyUp="@FileNameChanged"></MudTextField>
+            </MudItem>
+            <MudItem xs="12">
+                <MudSelect T="string" Label="Категория" @bind-Value="SelectedCategory">
+                    @foreach (var item in CategoriesList)
+                    {
+                        <MudSelectItem Value="@item">@item</MudSelectItem>
+                    }
+                </MudSelect>
+            </MudItem>
+            <MudItem xs="12">
+                <MudTextField Label="Краткое описание" @bind-Value="file.Description" T="string" Multiline="true" Rows="4"></MudTextField>
+            </MudItem>
+            <MudItem xs="12">
+                <MudTextField T="string" Label="Полное описание" Variant="Variant.Text" @bind-Value="file.DescriptionFull" AutoGrow HelperText="" />
+            </MudItem>
+            <MudItem xs="12">
+                <MudTextField Label="SEO-Title" @bind-Value="file.Seo_Title"></MudTextField>
+            </MudItem>
+            <MudItem xs="12">
+                <MudTextField Label="SEO-Description" @bind-Value="file.Seo_Description"></MudTextField>
+            </MudItem>
+            <MudItem xs="12">
+                <MudTextField Label="SEO-Keywords" @bind-Value="file.Seo_Keywords"></MudTextField>
+            </MudItem>
+            <MudItem xs="12">
+                <MudTextField Label="SEO-Url" TextChanged="SeoUrlTextChanged" @bind-Value="file.Seo_Url"></MudTextField>
+            </MudItem>
+            <MudItem xs="12">
+                 <MudTextField Label="Ссылка на изображение" @bind-Value="@FileImageUrl"></MudTextField>
+            </MudItem> 
+            <MudItem xs="12">
+                <MudTextField Label="Ключевые слова" @bind-Value="file.Keywords"></MudTextField>
+            </MudItem>
+            <MudItem xs="12">
+                <MudTextField Label="Ссылка на скачивание" @bind-Value="file.DownloadUrl"></MudTextField>
+            </MudItem>
+            <MudItem xs="12">
+                <MudTextField Label="Название скачиваемого файла" @bind-Value="file.DownloadFileName"></MudTextField>
+            </MudItem>
+            <MudItem xs="12">
+                <MudTextField Label="Размер файла" @bind-Value="file.DownloadSize"></MudTextField>
+            </MudItem>
+            <MudItem xs="12">
+                <MudTextField Label="Цена" @bind-Value="file.Price"></MudTextField>
+            </MudItem>
 
-      <MudItem xs="12">
-        <MudTextField Label="Лицензия" @bind-Value="file.Licence"></MudTextField>
-    </MudItem>
-    <MudItem xs="12">
-        <MudTextField Label="Разработчик" @bind-Value="file.Developer"></MudTextField>
-    </MudItem>
-     <MudItem xs="12">
-        <MudTextField Label="Платформа" @bind-Value="file.OC"></MudTextField>
-    </MudItem>
-     <MudItem xs="12">
-        <MudTextField Label="Версия" @bind-Value="file.Version"></MudTextField>
-    </MudItem>
-</MudGrid>
+            <MudItem xs="12">
+                <MudTextField Label="Лицензия" @bind-Value="file.Licence"></MudTextField>
+            </MudItem>
+            <MudItem xs="12">
+                <MudTextField Label="Разработчик" @bind-Value="file.Developer"></MudTextField>
+            </MudItem>
+            <MudItem xs="12">
+                <MudTextField Label="Платформа" @bind-Value="file.OC"></MudTextField>
+            </MudItem>
+            <MudItem xs="12">
+                <MudTextField Label="Версия" @bind-Value="file.Version"></MudTextField>
+            </MudItem>
+        </MudGrid>
 
-@if (AlertIsVisible)
+        @if (AlertIsVisible)
 {
     <MudAlert Severity="Severity.Warning">@AlertText</MudAlert>
 }
+
+    <MudButton OnClick="@AddFile" Color="Color.Primary" Style="margin:5px;">Добавить материал</MudButton>
+    </Authorized>
+    <NotAuthorized>
+        <p>У вас нет прав для добавления нового материала</p>
+    </NotAuthorized>
+</AuthorizeView>
+
+
+
 <br /><br />
-<MudButton OnClick="@AddFile" Color="Color.Primary">Добавить материал</MudButton>
+
 <br /><br /><br /><br /><br /><br />
 @code {
+    [Parameter] public string FileImageUrl {get;set;}
+
     [Parameter]
     public bool AlertIsVisible { get; set; }
     [Parameter]
@@ -105,11 +125,20 @@
         file.Category = SelectedCategory;
         file.Language = "ru";
 
+
+
         if (CheckFileBeforeAdd() == false)
         {
             AlertIsVisible = true;
             return;
         }
+
+        ImageModel imageModel = new();
+        imageModel.FileModel = file;
+        imageModel.ImageURL = FileImageUrl;
+        imageModel.Description = "";
+
+        file.Image.Add(imageModel);
 
         AlertIsVisible = false;
         bool ergebnis = await fileService.InsertLoadAsync(file);
@@ -166,11 +195,11 @@
             AlertText ="SEO-Url отсутствует";
             return false;
         }
-        if (String.IsNullOrEmpty(file.GetFirstImageUrl()))
-        {
-            AlertText = "Ссылка на изображение отсутствует";
-            return false;
-        }
+        // if (String.IsNullOrEmpty(file.GetFirstImageUrl()))
+        // {
+        //     AlertText = "Ссылка на изображение отсутствует";
+        //     return false;
+        // }
         if (String.IsNullOrEmpty(file.Keywords))
         {
             AlertText = "Ключевые слова отсутствуют";
@@ -196,6 +225,22 @@
     protected override async Task OnInitializedAsync()
     {
         Files = await fileService.GetLoadsAsync();
+
+        // FileList = await loadService.GetLoadsAsync();
+        
+        var authState = await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        if (user.Identity.IsAuthenticated)
+        {
+            // User is logged in
+            // Your logic here
+        }
+        else
+        {
+            // User is not logged in
+            // Handle accordingly
+        }
     }
 
     private void SeoUrlTextChanged(string value)

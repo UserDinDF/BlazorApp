@@ -5,7 +5,7 @@
 namespace BlazorAppServer.Migrations
 {
     /// <inheritdoc />
-    public partial class UpdTable : Migration
+    public partial class testinit46 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

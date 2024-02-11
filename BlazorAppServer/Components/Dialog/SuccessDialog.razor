@@ -1,0 +1,19 @@
+﻿@using MudBlazor
+
+<Dialog Class="my-success-dialog">
+    <DialogContent>
+        <MudText Typo="Typo.h5">Success!</MudText>
+        <MudText>@Message</MudText>
+    </DialogContent>
+    <DialogActions>
+        <MudButton Color="Color.Primary" OnClick="Close">OK</MudButton>
+    </DialogActions>
+</Dialog>
+
+@code {
+    [Parameter] public string Message { get; set; }
+
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    void Close() => MudDialog.Close(DialogResult.Ok(true));
+}

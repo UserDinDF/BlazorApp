@@ -1,11 +1,14 @@
 ﻿@page "/load/{Id}/{SeoUrl}"
+
+@using BlazorAppServer.Components.Dialog
 @using BlazorAppServer.Data
 @using BlazorAppServer.Data.Models
 @using BlazorAppServer.Components
 @using BlazorAppServer.Enums
 
-@inject FileService commentService
+@inject FileService fileService
 @inject NavigationManager navigationManager
+@inject IDialogService DialogService
 
 <PageTitle>@GetTitle()</PageTitle>
 
@@ -14,8 +17,9 @@
 
 <HeadContent> 
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
-    <meta name="description" content="@GetDescription()">
-    <meta name="keywords" content="@GetKeywords()">
+    <meta name="description" content="@fileModel.Seo_Description">
+    <meta name="keywords" content="@fileModel.Seo_Keywords">
+    <meta name="robots" content="index,follow">
 </HeadContent>
 
 
@@ -31,10 +35,20 @@
 
 <div class="content-block d-grid" id="content-block">
 
+<AuthorizeView Roles="Administrator">
+    <MudGrid Justify="Justify.FlexEnd" Style="padding-right:20px;">
+    <MudIconButton Icon="@Icons.Material.Filled.FileCopy" OnClick="@((e)=> CopyFile(e))" Style="margin-right:5px;" Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small" />
+    <MudIconButton Icon="@Icons.Material.Filled.Edit" Style="margin-right:5px;" Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small" />
+    <MudIconButton Icon="@Icons.Material.Filled.Delete" OnClick="@((e)=> DeleteFile(e))" Variant="Variant.Outlined" Color="Color.Primary" Size="Size.Small" />
+    </MudGrid>
+</AuthorizeView>
+
 <article class="page ignore-select">
 <div class="short sect__header">
 <header class="short__header">
 @* <?if($MODER_PANEL$)?><div style="float: right;padding: 5px;">$MODER_PANEL$</div><?endif?> *@
+
+
 <h1 class="short__title">@fileModel.Name</h1>
 <div class="short__meta d-flex">
 <div class="short__meta-item"><MudIcon Icon="@Icons.Material.Filled.DateRange" Size="Size.Small" />@fileModel.CreationTime.ToShortDateString(), @fileModel.CreationTime.ToShortTimeString()</div>
@@ -61,7 +75,7 @@
                 <MudPaper Class="pa-1" Elevation="0" Style="border-radius:0px; font-size:10px;">Версия: <b>@fileModel.Version</b></MudPaper>
                 <MudPaper Class="pa-1" Elevation="0" Style="border-radius:0px; font-size:10px;">Язык: <b>@fileModel.Language</b></MudPaper>
                 <MudPaper Class="pa-1" Elevation="0" Style="border-radius:0px; font-size:10px;">ОС: <b>@fileModel.OC</b></MudPaper>
-                <MudPaper Class="pa-1" Elevation="0" Style="border-radius:0px; font-size:10px;">Рейтинг: <b>@fileModel.Rating</b></MudPaper>
+                <MudPaper Class="pa-1" Elevation="0" Style="border-radSius:0px; font-size:10px;">Рейтинг: <b>@fileModel.Rating</b></MudPaper>
             </MudStack>
         </MudPaper>
     </MudItem>
@@ -94,19 +108,39 @@
 </div>
 </div>
 
-@* <section class="sect">
-<h2 class="sect__header sect__title">Смотрите также:</h2>
-<div class="sect__content d-grid">$MYINF_5$</div>
-</section> *@
-
 </article>
 <!-- </body> -->
 </div>
 </main> <!-- END COL-MAIN -->
 
-<aside class="col-side">
-<BlazorAppServer.Components.Informers.RandomFilesInformer Items="@InformerRandomFiles"></BlazorAppServer.Components.Informers.RandomFilesInformer>
-</aside> <!-- END COL-SIDE -->
+
+        <aside>
+        
+                       <MudStack Justify="Justify.FlexStart" Style="margin:5px;"> 
+                        @foreach (FileModel item in InformerRandomFiles)
+                        {
+                    <MudPaper Class="pa-3" Style="display: flex; align-items: center; gap: 10px;">
+                        @if (item.Image.Count > 0)
+                        {
+                            <MudImage src="@item.Image.FirstOrDefault().ImageURL" Width="100" Height="75" Elevation="10" Class="rounded-lg" alt="@item.Name" />
+                        }
+                        <div class="top-files-content" Style="display: flex; flex-direction: column; justify-content: center;">
+                            <div class="top-files-title"><a href="@item.GetFilePath()">@item.Name</a></div>
+                            <MudDivider />
+                            <div class="top-files-detail">
+                                @if (@item.DescriptionFull.Length > 100)
+                                {
+                                <span>@item.DescriptionFull.Substring(0, 100)...</span>
+                                }
+                            </div>
+                        </div>
+                    </MudPaper>
+                        }
+            </MudStack>
+              
+      
+        </aside>
+ <!-- END COL-SIDE -->
 </div> <!-- END COLS -->
 </div> <!-- END CONTENT -->
 
@@ -132,14 +166,70 @@
 
     Random rng = new Random();
 
+
+    public async void CopyFile(MouseEventArgs e)
+    {
+        FileModel filenew = new();
+
+        filenew.Keywords = "testfile";
+        filenew.Category = "Инструменты разработчика";
+        filenew.Name = "testfile";
+        filenew.Description = "desc";
+        filenew.DescriptionFull = "desc";
+        filenew.Developer = "";
+        filenew.CreationTime = DateTime.Now;
+        filenew.UpdateTime = DateTime.Now;
+        filenew.Licence = "test";
+        filenew.Version = "2";
+        filenew.DownloadFileName = "";
+        filenew.DownloadSize = "2mb";
+        filenew.DownloadUrl = "1";
+        filenew.Language = "ru";
+        filenew.OC = "";
+        filenew.Price = "";
+        filenew.Seo_Keywords = "";
+        filenew.Seo_Description = "";
+        filenew.Seo_Url = "testfile";
+        filenew.Seo_Title = "test";
+        await fileService.fileRepository.InsertLoadAsync(filenew);
+    }
+
+    public async void DeleteFile(MouseEventArgs e)
+    {
+        var parameters = new DialogParameters<CustomDialog>();
+        parameters.Add(x => x.ContentText, $"Вы действительно хотите удалить файл '{fileModel.Name}'");
+        parameters.Add(x => x.ButtonText, "Удалить");
+        parameters.Add(x => x.Color, Color.Error);
+
+        var dialog = DialogService.Show<CustomDialog>("Удаление файла", parameters);
+
+        var result = await dialog.Result;
+
+        var isCancelled = result.Cancelled;
+
+        if (isCancelled == false)
+        {
+            await fileService.fileRepository.RemoveLoadAsync(fileModel);
+
+
+            var parametersDeletedFile = new DialogParameters {{ "Информация", "Операция была успешна выполнена" }};
+
+            DialogService.Show<SuccessDialog>("Файл был успешно удален", parametersDeletedFile);
+
+
+            navigationManager.NavigateTo("/load");
+        }
+    }
+
+   
     protected override async Task OnInitializedAsync()
     {
-        await base.OnInitializedAsync();
+ 
 
-        files = await commentService.fileRepository.GetLoadsAsync();
-        fileModel = await commentService.fileRepository.GetLoadAsync(Convert.ToInt32(Id));
-        fileModel.Image = await commentService.imageRepository.GetImagesAsync(Convert.ToInt32(fileModel.Id));
-        fileModel.Comments = await commentService.commentRepository.GetCommentsAsync();
+        files = await fileService.fileRepository.GetLoadsAsync();
+        fileModel = await fileService.fileRepository.GetLoadAsync(Convert.ToInt32(Id));
+        fileModel.Image = await fileService.imageRepository.GetImagesAsync(Convert.ToInt32(fileModel.Id));
+        fileModel.Comments = await fileService.commentRepository.GetCommentsAsync();
 
         InformerRandomFiles = files;
         InformerRandomFiles = InformerRandomFiles.OrderBy(x => rng.Next()).Take(10).ToList();
@@ -147,6 +237,8 @@
         UpdateBreadcrumb();
 
         fileModel.Views++;
+
+        await base.OnInitializedAsync();
     }
 
 

@@ -4,7 +4,7 @@
 @inject FileService commentService
 
     <div class="page__comments-header">
-        <div class="page__comments-title">Комментарии</div>
+    <div class="page__comments-title">Комментарии (@Comments.Count)</div>
     </div>
 
          
@@ -46,7 +46,7 @@
             <MudTextField Label="Сообщение" TextChanged="TextChanged" @bind-Value="commentText" T="string" Multiline="true" Rows="4"></MudTextField>
         </div>
 
-         <MudTextField Label="@captchaText" TextChanged="TextChanged" @bind-Value="userAnswer" T="int" Multiline="true" Rows="4"></MudTextField>
+         <MudTextField Label="@captchaText" TextChanged="TextChanged" @bind-Value="userAnswer" T="string" Multiline="true" Rows="4"></MudTextField>
 
 
      @if (AlertIsVisible)
@@ -54,7 +54,7 @@
         <MudAlert Severity="Severity.Warning">@AlertText</MudAlert>
     }
 
-       <button type="submit" disabled="@isButtonDisabled" class="btn btn-primary">Отправить комментарий</button>
+       <button type="submit" disabled="@isButtonDisabled" class="btn btn-primary" style="margin:5px;">Отправить комментарий</button>
     </form>
 </div>
     </Authorized>
@@ -77,7 +77,7 @@
     private int num1;
     private int num2;
     private int captchaAnswer;
-    private int userAnswer;
+    private string userAnswer;
     private string captchaText;
 
     protected override void OnInitialized()
@@ -101,7 +101,7 @@
             AlertText = "Поле комментарий пустое";
             return false;
         }
-        if (captchaAnswer != userAnswer)
+        if (captchaAnswer != Convert.ToInt32(userAnswer))
         {
             AlertIsVisible = true;
             isButtonDisabled = true;
@@ -147,7 +147,7 @@
                 FileModel = CurrentFile
             };
 
-        bool result = await commentService.commentRepository.InsertLoadAsync(newComment);
+        bool result = await commentService.commentRepository.InsertCommentAsync(newComment);
 
         if (result)
         {

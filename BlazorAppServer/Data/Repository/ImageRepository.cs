@@ -14,7 +14,7 @@ namespace BlazorAppServer.Data.Services
             _service = service;
         }
 
-        public async Task<List<ImageModel>> GetLoadsAsync()
+        public async Task<List<ImageModel>> GetImagesAsync()
         {
             var item = _service.Images.FirstOrDefault();
 
@@ -33,7 +33,7 @@ namespace BlazorAppServer.Data.Services
             return load;
         }
 
-        public async Task<bool> InsertLoadAsync(ImageModel load)
+        public async Task<bool> InsertImageAsync(ImageModel load)
         {
             await _service.Images.AddAsync(load);
             await _service.SaveChangesAsync();
@@ -41,7 +41,7 @@ namespace BlazorAppServer.Data.Services
             return true;
         }
 
-        public async Task<bool> RemoveLoadAsync(ImageModel load)
+        public async Task<bool> RemoveImageAsync(ImageModel load)
         {
             _service.Images.Remove(load);
             await _service.SaveChangesAsync();
@@ -49,7 +49,7 @@ namespace BlazorAppServer.Data.Services
             return true;
         }
 
-        public async Task<bool> UpdateLoadAsync(ImageModel load)
+        public async Task<bool> UpdateImageAsync(ImageModel load)
         {
             _service.Images.Update(load);
             await _service.SaveChangesAsync();

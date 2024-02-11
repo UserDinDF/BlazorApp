@@ -12,15 +12,15 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlazorAppServer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240101200922_upd filemodel")]
-    partial class updfilemodel
+    [Migration("20240128144040_removed table")]
+    partial class removedtable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.0")
+                .HasAnnotation("ProductVersion", "8.0.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -46,6 +46,10 @@ namespace BlazorAppServer.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -93,7 +97,36 @@ namespace BlazorAppServer.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("BlazorAppServer.Data.FileModel", b =>
+            modelBuilder.Entity("BlazorAppServer.Data.Models.CommentModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Author")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("FileModelId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FileModelId");
+
+                    b.ToTable("Comments", "data");
+                });
+
+            modelBuilder.Entity("BlazorAppServer.Data.Models.FileModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -104,9 +137,6 @@ namespace BlazorAppServer.Migrations
                     b.Property<string>("Category")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Comments")
-                        .HasColumnType("int");
 
                     b.Property<DateTime>("CreationTime")
                         .HasColumnType("datetime2");
@@ -137,10 +167,6 @@ namespace BlazorAppServer.Migrations
 
                     b.Property<int>("Downloads")
                         .HasColumnType("int");
-
-                    b.Property<string>("Image")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Keywords")
                         .IsRequired()
@@ -198,6 +224,32 @@ namespace BlazorAppServer.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Files", "data");
+                });
+
+            modelBuilder.Entity("BlazorAppServer.Data.Models.ImageModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("FileModelId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ImageURL")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FileModelId");
+
+                    b.ToTable("Images", "data");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -333,6 +385,28 @@ namespace BlazorAppServer.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("BlazorAppServer.Data.Models.CommentModel", b =>
+                {
+                    b.HasOne("BlazorAppServer.Data.Models.FileModel", "FileModel")
+                        .WithMany("Comments")
+                        .HasForeignKey("FileModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("FileModel");
+                });
+
+            modelBuilder.Entity("BlazorAppServer.Data.Models.ImageModel", b =>
+                {
+                    b.HasOne("BlazorAppServer.Data.Models.FileModel", "FileModel")
+                        .WithMany("Image")
+                        .HasForeignKey("FileModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("FileModel");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -382,6 +456,13 @@ namespace BlazorAppServer.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("BlazorAppServer.Data.Models.FileModel", b =>
+                {
+                    b.Navigation("Comments");
+
+                    b.Navigation("Image");
                 });
 #pragma warning restore 612, 618
         }

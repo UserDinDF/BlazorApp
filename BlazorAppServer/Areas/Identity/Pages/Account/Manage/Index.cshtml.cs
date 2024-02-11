@@ -80,8 +80,6 @@ namespace BlazorAppServer.Areas.Identity.Pages.Account.Manage
 
             Input = new InputModel
             {
-                //Name = user.Name,
-                //DOB = user.DOB,
                 PhoneNumber = phoneNumber
             };
         }
@@ -106,11 +104,11 @@ namespace BlazorAppServer.Areas.Identity.Pages.Account.Manage
                 return NotFound($"Unable to load user with ID '{_userManager.GetUserId(User)}'.");
             }
 
-            if (!ModelState.IsValid)
-            {
-                await LoadAsync(user);
-                return Page();
-            }
+            //if (!ModelState.IsValid)
+            //{
+            //    await LoadAsync(user);
+            //    return Page();
+            //}
 
             var phoneNumber = await _userManager.GetPhoneNumberAsync(user);
             if (Input.PhoneNumber != phoneNumber)

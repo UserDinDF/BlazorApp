@@ -12,15 +12,15 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlazorAppServer.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240107155215_Added Image Table")]
-    partial class AddedImageTable
+    [Migration("20240128125742_test init46")]
+    partial class testinit46
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.0")
+                .HasAnnotation("ProductVersion", "8.0.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -93,7 +93,7 @@ namespace BlazorAppServer.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("BlazorAppServer.Data.CommentModel", b =>
+            modelBuilder.Entity("BlazorAppServer.Data.Models.CommentModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -122,7 +122,7 @@ namespace BlazorAppServer.Migrations
                     b.ToTable("Comments", "data");
                 });
 
-            modelBuilder.Entity("BlazorAppServer.Data.FileModel", b =>
+            modelBuilder.Entity("BlazorAppServer.Data.Models.FileModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -222,7 +222,7 @@ namespace BlazorAppServer.Migrations
                     b.ToTable("Files", "data");
                 });
 
-            modelBuilder.Entity("BlazorAppServer.Data.ImageModel", b =>
+            modelBuilder.Entity("BlazorAppServer.Data.Models.ImageModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -381,9 +381,9 @@ namespace BlazorAppServer.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("BlazorAppServer.Data.CommentModel", b =>
+            modelBuilder.Entity("BlazorAppServer.Data.Models.CommentModel", b =>
                 {
-                    b.HasOne("BlazorAppServer.Data.FileModel", "FileModel")
+                    b.HasOne("BlazorAppServer.Data.Models.FileModel", "FileModel")
                         .WithMany("Comments")
                         .HasForeignKey("FileModelId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -392,9 +392,9 @@ namespace BlazorAppServer.Migrations
                     b.Navigation("FileModel");
                 });
 
-            modelBuilder.Entity("BlazorAppServer.Data.ImageModel", b =>
+            modelBuilder.Entity("BlazorAppServer.Data.Models.ImageModel", b =>
                 {
-                    b.HasOne("BlazorAppServer.Data.FileModel", "FileModel")
+                    b.HasOne("BlazorAppServer.Data.Models.FileModel", "FileModel")
                         .WithMany("Image")
                         .HasForeignKey("FileModelId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -454,7 +454,7 @@ namespace BlazorAppServer.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("BlazorAppServer.Data.FileModel", b =>
+            modelBuilder.Entity("BlazorAppServer.Data.Models.FileModel", b =>
                 {
                     b.Navigation("Comments");
 

@@ -41,11 +41,6 @@
     z-index: 60;
 }
 
-.cols {
-    display: grid;
-    gap: 40px 40px;
-    grid-template-columns: minmax(0,1fr) 300px;
-}
 
 .col-side {
     display: grid;
@@ -1308,9 +1303,7 @@ body.mobile-menu-is-opened {
         font-size: 18px;
     }
 
-    .cols {
-        grid-template-columns: minmax(0,1fr);
-    }
+
 
     .footer {
         display: block;

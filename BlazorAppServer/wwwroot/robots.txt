@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /Identity/Account/Manage
+
+Sitemap: https://soft-portal.org/sitemap.xml
